@@ -1,0 +1,9 @@
+{
+  "name": "Messenger-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
