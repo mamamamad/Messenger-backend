@@ -1,11 +1,12 @@
-import express from "express";
-const app = express();
+import Application from "./Application.mjs";
+import { log } from "./core/utils.mjs";
 
-app.use(express.json());
+function main() {
+  try {
+    Application.run();
+  } catch (e) {
+    log(e);
+  }
+}
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-app.listen(3001, () => {
-  console.log(`Example app listening on port 3001`);
-});
+main();
