@@ -1,14 +1,32 @@
+/**
+ * UserController
+ * --------------
+ * Handles user authentication and login logic.
+ */
+
 import { validationResult } from "express-validator";
 import users from "./../module/user_login.mjs";
 import BaseController from "../core/Basecontroller.mjs";
 import { log } from "../core/utils.mjs";
 
+/**
+ * Controller for user authentication.
+ */
 class Usercontroller extends BaseController {
   constructor() {
     super();
   }
 
+  /**
+   * Placeholder for login check logic.
+   */
   checkLogin() {}
+
+  /**
+   * Handles user login.
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   */
   async userLogin(req, res) {
     try {
       log("hi");

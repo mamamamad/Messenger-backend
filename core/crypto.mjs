@@ -1,7 +1,17 @@
+/**
+ * Crypto
+ * ------
+ * Provides encryption and decryption utilities using AES-256-CBC.
+ * Uses a secret key from environment variables.
+ */
+
 import crypto from "crypto";
 import { log, getEnv, setEnv } from "./utils.mjs";
 import { json } from "stream/consumers";
 
+/**
+ * Crypto class for encrypting and decrypting data.
+ */
 class Crypto {
   #algorithm = "aes-256-cbc";
   #key = "";
@@ -20,6 +30,12 @@ class Crypto {
       log(e.toString());
     }
   }
+
+  /**
+   * Encrypts the given data.
+   * @param {any} data - Data to encrypt.
+   * @returns {string} Encrypted string.
+   */
   encrypt(data) {
     try {
       const chiper = crypto.createCipheriv(
@@ -36,6 +52,12 @@ class Crypto {
       log(error);
     }
   }
+
+  /**
+   * Decrypts the given encrypted string.
+   * @param {string} encrypted - Encrypted string.
+   * @returns {any} Decrypted data.
+   */
   decrypt(encrypted) {
     try {
       const decipher = crypto.createDecipheriv(
