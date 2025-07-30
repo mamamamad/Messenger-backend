@@ -1,4 +1,4 @@
-import { log } from "./utils.mjs";
+import { log, getEnv } from "./utils.mjs";
 import autoBind from "auto-bind";
 
 export default class BaseController {
@@ -8,11 +8,19 @@ export default class BaseController {
 
   defaultError(error, res) {
     try {
-      log(error);
-      res.status(500).json({ error: "Internal Eroor." });
+      if (getEnv("DEBUG", "bool")) {
+        return res.status(500).json({ error: "Internal Server Eroor." });
+      } else {
+        res.status(500).json({ error: `${error}` });
+      }
     } catch (err) {
-      log(err);
-      res.status(500).json({ error: "Internal Eroor." });
+      if (getEnv("DEBUG", "bool")) {
+        log(err);
+        return res.status(500).json({ error: "Internal Server Eroor." });
+      } else {
+        log(err);
+        res.status(500).json({ error: `${err}` });
+      }
     }
   }
 }
