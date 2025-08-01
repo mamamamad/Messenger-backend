@@ -7,6 +7,7 @@
 import dotenv from "dotenv";
 import BaseController from "./Basecontroller.mjs";
 import fs from "fs";
+import crypto from "crypto";
 dotenv.config();
 
 /**
@@ -64,5 +65,31 @@ export function setEnv(key, value) {
     }
   } catch (e) {
     log(e.toString());
+  }
+}
+
+/**
+ * a function for generate random number
+ */
+export function randomNum(min, max) {
+  try {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  } catch (e) {
+    log(e);
+  }
+}
+
+export function genaratorOtpToken() {
+  try {
+    return crypto.randomInt(10000, 99999);
+  } catch (e) {
+    log(e);
+  }
+}
+export function genaratorCookie(length) {
+  try {
+    return crypto.randomBytes(length).toString("hex");
+  } catch (e) {
+    log(e);
   }
 }

@@ -12,14 +12,26 @@ import { body } from "express-validator";
  * - email: optional, must be a valid email if provided
  * - password: required, must be a string with at least 5 characters
  */
+
 const userLoginValidate = [
-  body("email").exists().optional().isEmail().withMessage("Provide valid email"),
-  body("password").exists()
+  body("otpCode")
     .exists()
-    .withMessage("Password is required")
-    .isString()
-    .withMessage("Password should be string")
-    .isLength({ min: 5 })
-    .withMessage("Password should be at least 5 characters"),
+    .optional()
+    .isEmail()
+    .withMessage("Provide valid email"),
+  body("phoneNumber")
+    .exists()
+    .isNumeric()
+    .optional()
+    .custom((value) => {
+      let phone = value.toString();
+      if (!phone.startsWith("09")) {
+        throw new Error("Phone number must start with 09");
+      }
+      if (phone.length !== 11) {
+        throw new Error("Phone number must be exactly 11 digits");
+      }
+      return true;
+    }),
 ];
 export default userLoginValidate;

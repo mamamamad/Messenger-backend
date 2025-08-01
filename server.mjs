@@ -6,29 +6,21 @@
  */
 
 import Application from "./Application.mjs";
-import CryptoController from "./core/crypto.mjs";
-import { log, getEnv } from "./core/utils.mjs";
+import { log, getEnv, randomNum } from "./core/utils.mjs";
+import redis from "./core/redis.mjs";
 
 /**
  * Main function to start the application and demonstrate crypto usage.
  */
-function main() {
+async function main() {
   try {
     // Start the Express application
     Application.run();
-
-    // Example: Encrypt and decrypt a sample string
-    let x = CryptoController.encrypt(
-      "hdadadaddkafsjkfbsjbfasfsfafsdfafdsggsvn sm,bf,mbasm,dnamdnsmfans,fbnsmfbsfbsann"
-    );
-    let y = CryptoController.decrypt(x);
-    log(x); // Log encrypted string
-    log(y); // Log decrypted string
+    // log(await redis.redis1.keys("A*"));
   } catch (e) {
     log("12");
     log(e);
   }
 }
 
-// Run the main function
 main();
