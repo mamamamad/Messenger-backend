@@ -1,0 +1,13 @@
+version: "3.8" # Specifies the Docker Compose file format version
+
+services:
+  redis: # Defines a service named 'redis'
+    image: redis:7.4-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1
+    volumes:
+      - redis_data:/data
+volumes:
+  redis_data:
