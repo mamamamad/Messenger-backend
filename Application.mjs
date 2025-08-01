@@ -11,6 +11,7 @@ import Approute from "./routes/route.mjs";
 import cors from "cors";
 import Error404 from "./controller/Error404Controller.mjs";
 import Error500 from "./controller/Error500Controller.mjs";
+import cookieParser from "cookie-parser";
 
 /**
  * Application
@@ -39,6 +40,7 @@ class Application {
     this.#app.use(express.static("/media"));
     this.#app.use(express.urlencoded({ extended: true, limit: "10mb" }));
     this.#app.use(express.json({ limit: "10mb" }));
+    this.#app.use(cookieParser());
   }
 
   /**

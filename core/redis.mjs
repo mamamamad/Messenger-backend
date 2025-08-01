@@ -66,6 +66,14 @@ class RedisClient {
       return e.toString();
     }
   }
+  async delHash(key, value) {
+    try {
+      return await this.#ioredis.del(key);
+    } catch (e) {
+      log(e);
+      return e.toString();
+    }
+  }
 }
 
 const redis1 = new RedisClient();

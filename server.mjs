@@ -9,6 +9,7 @@ import Application from "./Application.mjs";
 import { log, getEnv, randomNum } from "./core/utils.mjs";
 import redis from "./core/redis.mjs";
 
+
 /**
  * Main function to start the application and demonstrate crypto usage.
  */

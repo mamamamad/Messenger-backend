@@ -9,8 +9,7 @@ import users from "./../module/user_login.mjs";
 import BaseController from "../core/Basecontroller.mjs";
 import Redis from "./../core/redis.mjs";
 import { log, genaratorOtpToken, genaratorCookie } from "../core/utils.mjs";
-import { status } from "@grpc/grpc-js";
-
+import cookieparser from "cookie-parser";
 /**
  * Controller for user authentication.
  */
@@ -94,7 +93,7 @@ class Usercontroller extends BaseController {
         await Redis.redis1.setHash(
           key,
           { otp: token, phoneNumber: numPhone },
-          90
+          300
         );
         log(token);
         return res.status(200).json({
@@ -121,10 +120,12 @@ class Usercontroller extends BaseController {
         (await Redis.redis1.getHash(key, "phoneNumber")) === phoneNumber
       ) {
         const cookie = genaratorCookie(10);
-        const key_cookie = `RPCookie:${cookie}`;
-        await Redis.redis1.setHash(
-          key,
-          { cookie: key_cookie, phoneNumber: phoneNumber },
+
+        const key_cookie = `RPCookie:${cookie}`; // ResetPasswordCookie
+        await Redis.redis1.delHash(key);
+        let x = await Redis.redis1.setHash(
+          key_cookie,
+          { cookie: cookie, phoneNumber: phoneNumber },
           300
         );
 
@@ -142,6 +143,58 @@ class Usercontroller extends BaseController {
         return res.status(404).json({
           error: null,
           status: "fail",
+        });
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
+  async forgetPassword(req, res) {
+    try {
+      const err = validationResult(req);
+      if (!err.isEmpty()) {
+        return res.status(403).json({
+          status: "fail",
+          error: err.errors[0]["msg"],
+        });
+      }
+
+      const cookieMyValue = req.cookies.otpCookie;
+
+      if (cookieMyValue === undefined) {
+        return res.status(401).json({
+          status: "fail",
+          error: "Not Authorized",
+        });
+      }
+
+      const phoneNumber = req.body.phoneNumber;
+      const pass = req.body.pass1;
+      const passAgain = req.body.pass2;
+      const key = `RPCookie:${cookieMyValue}`;
+
+      if (
+        (await Redis.redis1.getHash(key, "cookie")) === cookieMyValue &&
+        (await Redis.redis1.getHash(key, "phoneNumber")) === phoneNumber
+      ) {
+        if (pass === passAgain) {
+          // fixed the code.
+          await Redis.redis1.delHash(key);
+          res.clearCookie("otpCookie");
+          res.status(200).json({
+            status: "success",
+            error: "Null",
+            message: "Password Changed.",
+          });
+        } else {
+          res
+            .status(400)
+            .json({ status: "fail", error: "Passwords Do Not atch." });
+        }
+      } else {
+        return res.status(401).json({
+          status: "fail",
+          error: "Not Authorized",
         });
       }
     } catch (e) {

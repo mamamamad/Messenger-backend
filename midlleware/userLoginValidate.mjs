@@ -13,8 +13,12 @@ import { body } from "express-validator";
  * - password: required, must be a string with at least 5 characters
  */
 const userLoginValidate = [
-  body("email").exists().optional().isEmail().withMessage("Provide valid email"),
-  body("password").exists()
+  body("email")
+    .exists()
+    .optional()
+    .isEmail()
+    .withMessage("Provide valid email"),
+  body("password")
     .exists()
     .withMessage("Password is required")
     .isString()

@@ -9,6 +9,7 @@ import { Router } from "express";
 import { matchedData } from "express-validator";
 import userLoginValidate from "../midlleware/userLoginValidate.mjs";
 import userPhoneValidate from "../midlleware/userPhoneValidate.mjs";
+import userRestPassword from "../midlleware/userResetPassword.mjs";
 import Usercontroller from "../controller/Usercontroller.mjs";
 
 /**
@@ -61,5 +62,10 @@ route.post(
   validateBody(["phoneNumber", "otpCode"]),
   Usercontroller.verifyOtp
 );
-
+route.post(
+  "/forgetPassword",
+  userRestPassword,
+  validateBody(["phoneNumber", "pass1", "pass2"]),
+  Usercontroller.forgetPassword
+);
 export default route;
