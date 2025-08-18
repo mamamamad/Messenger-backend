@@ -16,12 +16,12 @@ import {
   userLogin,
 } from "../midlleware/userValidate.mjs";
 import validateBody from "../midlleware/validateBodyReq.mjs";
-import { Usercontroller } from "./../controller/UserController.mjs";
+import { UserController } from "./../controller/UserController.mjs";
 
 /**
  * Router for user authentication endpoints.
  */
-const UserController = new Usercontroller();
+const Usercontroller = new UserController();
 const route = Router();
 
 /**
@@ -41,14 +41,14 @@ route.post(
   "/login",
   userLogin,
   new validateBody(["email", "password"]).handle,
-  (req, res) => UserController.userLogin(req, res)
+  (req, res) => Usercontroller.userLogin(req, res)
 );
 route.post(
   "/register",
   userRegester,
   new validateBody(["Fname", "Lname", "username", "email", "pass1", "pass2"])
     .handle,
-  UserController.register
+  Usercontroller.register
 );
 // route.post(
 //   "/send-otp",
