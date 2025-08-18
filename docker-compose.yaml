@@ -9,5 +9,15 @@ services:
     command: redis-server --save 20 1
     volumes:
       - redis_data:/data
+
+  mongodb: # Defines a service named 'redis'
+    image: mongo:7.0
+    restart: always
+    ports:
+      - "27017:27017"
+
+    volumes:
+      - mongo_data:/data/db
 volumes:
   redis_data:
+  mongo_data:

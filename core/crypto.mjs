@@ -5,9 +5,10 @@
  * Uses a secret key from environment variables.
  */
 
-import crypto from "crypto";
+import crypto, { hash } from "crypto";
 import { log, getEnv, setEnv } from "./utils.mjs";
 import { json } from "stream/consumers";
+import argon2 from "argon2";
 
 /**
  * Crypto class for encrypting and decrypting data.
@@ -68,6 +69,18 @@ class Crypto {
       let decrypted = decipher.update(encrypted, "hex", "utf-8");
       decrypted += decipher.final("utf-8");
       return JSON.parse(decrypted).data;
+    } catch (e) {
+      log(e);
+    }
+  }
+  async hashArogo2(password) {
+    const result = await argon2.hash(password);
+    return result;
+  }
+  async checkHashValid(hash, value) {
+    try {
+      const result = await argon2.verify(hash, value);
+      return result;
     } catch (e) {
       log(e);
     }

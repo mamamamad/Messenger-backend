@@ -6,9 +6,7 @@
  */
 
 import Application from "./Application.mjs";
-import { log, getEnv, randomNum } from "./core/utils.mjs";
-import redis from "./core/redis.mjs";
-
+import { log } from "./core/utils.mjs";
 
 /**
  * Main function to start the application and demonstrate crypto usage.
@@ -16,7 +14,8 @@ import redis from "./core/redis.mjs";
 async function main() {
   try {
     // Start the Express application
-    Application.run();
+    const app = new Application();
+    await app.run();
     // log(await redis.redis1.keys("A*"));
   } catch (e) {
     log("12");
@@ -24,4 +23,4 @@ async function main() {
   }
 }
 
-main();
+await main();

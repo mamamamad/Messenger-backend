@@ -22,7 +22,12 @@ class RedisClient {
   }
   async get(key) {
     try {
-      return await this.#ioredis.get(key);
+      let result = await this.#ioredis.get(key);
+      if (result) {
+        return result;
+      } else {
+        return "";
+      }
     } catch (e) {
       log(e);
       return e.toString();
@@ -30,7 +35,8 @@ class RedisClient {
   }
   async keys(key) {
     try {
-      return await this.#ioredis.keys(key);
+      result = await this.#ioredis.keys(key);
+      return result ? result : "";
     } catch (e) {
       log(e);
       return e.toString();
@@ -60,7 +66,8 @@ class RedisClient {
   }
   async getHash(key, value) {
     try {
-      return await this.#ioredis.hget(key, value);
+      result = await this.#ioredis.hget(key, value);
+      return result ? result : "";
     } catch (e) {
       log(e);
       return e.toString();
