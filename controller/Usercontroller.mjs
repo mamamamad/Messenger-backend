@@ -16,7 +16,7 @@ import crypto from "../core/crypto.mjs";
 /**
  * Controller for user authentication.
  */
-class Usercontroller extends BaseController {
+export default class Usercontroller extends BaseController {
   constructor() {
     super();
     this.userModel = UserModel;
@@ -269,5 +269,3 @@ class Usercontroller extends BaseController {
     }
   }
 }
-
-export default Usercontroller;
