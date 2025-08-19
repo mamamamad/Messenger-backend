@@ -12,6 +12,7 @@ import { log, genaratorOtpToken } from "../core/utils.mjs";
 
 import { UserModel } from "../globalMoudles.mjs";
 import crypto from "../core/crypto.mjs";
+import redis from "./../core/redis.mjs";
 
 /**
  * Controller for user authentication.
@@ -266,6 +267,12 @@ class UserController extends BaseController {
     } catch (e) {
       log(e);
     }
+  }
+  async profile(req, res) {
+    const userEmail = await redis.redis1.ftSearchJwtToken(req.userId);
+    
+
+    res.json({ msg: "ok" });
   }
 }
 export default UserController;

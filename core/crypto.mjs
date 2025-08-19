@@ -105,7 +105,7 @@ class Crypto {
         userData,
         3600
       );
-      log(result);
+
       const token = jwt.sign({ userId: userToken }, JwtSecret, {
         expiresIn: "1h",
       });
