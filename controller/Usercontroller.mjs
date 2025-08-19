@@ -8,7 +8,7 @@ import { validationResult } from "express-validator";
 
 import BaseController from "../core/Basecontroller.mjs";
 import Redis from "./../core/redis.mjs";
-import { log, genaratorOtpToken, genaratorCookie } from "../core/utils.mjs";
+import { log, genaratorOtpToken } from "../core/utils.mjs";
 
 import { UserModel } from "../globalMoudles.mjs";
 import crypto from "../core/crypto.mjs";
@@ -54,8 +54,8 @@ class UserController extends BaseController {
             password
           );
           if (passwordIsValid) {
-            return res.json({ code: 1, msg: "login success" });
-            //add jwt token
+            const jwtToken = await crypto.jwtGenerator(email);
+            return res.json({ code: 1, msg: "login success", token: jwtToken });
           } else {
             return res.status(400).json({
               code: 0,
@@ -231,8 +231,7 @@ class UserController extends BaseController {
       const existEmailusername = await this.userModel.userExistUsername(
         username
       );
-      log(existEmailemail);
-      log(existEmailusername);
+
       if (!existEmailusername && !existEmailemail) {
         if (pass1 === pass2) {
           const hashPassword = await crypto.hashArogo2(pass2);
