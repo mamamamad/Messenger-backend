@@ -1,5 +1,5 @@
 export default {
-  "/api/user/login": {
+  "/api/Auth/login": {
     post: {
       tags: ["Users"],
       summary: "User Login",
@@ -32,7 +32,7 @@ export default {
       },
     },
   },
-  "/api/user/register": {
+  "/api/Auth/register": {
     post: {
       tags: ["Users"],
       summary: "User Register",
