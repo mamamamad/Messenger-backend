@@ -6,13 +6,15 @@
  */
 
 import { Router } from "express";
-import userRoute from "./user.mjs";
+import userAuthRoute from "./userAuth.mjs";
+import userProfileRoute from "./userProfile.mjs";
 
 /**
  * Main application router.
  */
 const route = Router();
 
-route.use("/user", userRoute);
+route.use("/Auth", userAuthRoute);
+route.use("/Profile", userProfileRoute);
 
 export default route;
