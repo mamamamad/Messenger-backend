@@ -6,6 +6,7 @@ class RedisClient {
   #ioredis;
   constructor() {
     this.#ioredis = new Redis(getEnv("REDIS_URI"));
+    this.#ftJwtIndex = null;
   }
   async set(key, value, ex = 0) {
     try {
@@ -84,13 +85,29 @@ class RedisClient {
   async ftSearchJwtToken(value) {
     // A function is created to build an FT index for FT.SEARCH in Redis, then the value is searched and the result is returned.
     try {
+      if (!this.ftJwtIndex) {
+        await this.#ioredis.call(
+          "FT.CREATE",
+          "userToken",
+          "ON",
+          "HASH",
+          "PREFIX",
+          "1",
+          "Usertoke:",
+          "SCHEMA",
+          "id",
+          "TEXT",
+          "email",
+          "TEXT"
+        );
+      }
+
       const result = await this.#ioredis.call(
         "FT.SEARCH",
         "userToken",
         `@id:${value}`
       );
-      log(result);
-      log("hi");
+
       return result;
     } catch (e) {
       log(e);
