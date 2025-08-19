@@ -16,7 +16,8 @@ import {
   userLogin,
 } from "../midlleware/userValidate.mjs";
 import validateBody from "../midlleware/validateBodyReq.mjs";
-import UserController from "./../controller/UserController.mjs";
+import UserController from "../controller/Usercontroller.mjs";
+
 const userCon = new UserController();
 /**
  * Router for user authentication endpoint.
