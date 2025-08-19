@@ -67,7 +67,7 @@ class RedisClient {
   }
   async getHash(key, value) {
     try {
-      result = await this.#ioredis.hget(key, value);
+      const result = await this.#ioredis.hget(key, value);
       return result ? result : "";
     } catch (e) {
       log(e);
@@ -85,7 +85,7 @@ class RedisClient {
   async ftSearchJwtToken(value) {
     // A function is created to build an FT index for FT.SEARCH in Redis, then the value is searched and the result is returned.
     try {
-      if (!this.#ftJwtIndex) {
+      if (!(await this.checkFtIndex("userToken"))) {
         await this.#ioredis.call(
           "FT.CREATE",
           "userToken",
@@ -93,7 +93,7 @@ class RedisClient {
           "HASH",
           "PREFIX",
           "1",
-          "Usertoke:",
+          "UserEmail:",
           "SCHEMA",
           "id",
           "TEXT",
@@ -107,10 +107,23 @@ class RedisClient {
         "userToken",
         `@id:${value}`
       );
-
+      
+      if (result[0] === 0) return false;
       return result;
     } catch (e) {
       log(e);
+    }
+  }
+  async checkFtIndex(val) {
+    try {
+      const indexes = await this.#ioredis.call("FT._LIST");
+      if (indexes.includes(val)) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 }
