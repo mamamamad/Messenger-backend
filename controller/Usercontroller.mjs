@@ -33,7 +33,7 @@ class UserController extends BaseController {
    * @param {object} res - Express response object.
    */
   async userLogin(req, res) {
-    // This function is used to log in a user, verify their email and password, and generate a JWT token for them
+    // This function is used to log in a user, verify their email and password, and generate a JWT token for them.
     try {
       const err = validationResult(req);
       if (!err.isEmpty()) {
