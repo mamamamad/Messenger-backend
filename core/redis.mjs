@@ -81,6 +81,21 @@ class RedisClient {
       return e.toString();
     }
   }
+  async ftSearchJwtToken(value) {
+    // A function is created to build an FT index for FT.SEARCH in Redis, then the value is searched and the result is returned.
+    try {
+      const result = await this.#ioredis.call(
+        "FT.SEARCH",
+        "userToken",
+        `@id:${value}`
+      );
+      log(result);
+      log("hi");
+      return result;
+    } catch (e) {
+      log(e);
+    }
+  }
 }
 
 const redis1 = new RedisClient();
