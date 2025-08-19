@@ -19,7 +19,7 @@ import validateBody from "../midlleware/validateBodyReq.mjs";
 import UserController from "./../controller/UserController.mjs";
 const userCon = new UserController();
 /**
- * Router for user authentication endpoints.
+ * Router for user authentication endpoint.
  */
 
 const route = Router();
