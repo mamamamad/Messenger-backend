@@ -86,7 +86,7 @@ export function genaratorOtpToken() {
     log(e);
   }
 }
-export function genaratorCookie(length) {
+export function genaratorToken(length) {
   try {
     return crypto.randomBytes(length).toString("hex");
   } catch (e) {
