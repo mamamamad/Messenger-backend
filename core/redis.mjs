@@ -4,9 +4,9 @@ import { log, getEnv } from "./utils.mjs";
 /// a class for connect with redis db.  ///
 class RedisClient {
   #ioredis;
+  #ftJwtIndex = null;
   constructor() {
     this.#ioredis = new Redis(getEnv("REDIS_URI"));
-    this.#ftJwtIndex = null;
   }
   async set(key, value, ex = 0) {
     try {
@@ -85,7 +85,7 @@ class RedisClient {
   async ftSearchJwtToken(value) {
     // A function is created to build an FT index for FT.SEARCH in Redis, then the value is searched and the result is returned.
     try {
-      if (!this.ftJwtIndex) {
+      if (!this.#ftJwtIndex) {
         await this.#ioredis.call(
           "FT.CREATE",
           "userToken",
