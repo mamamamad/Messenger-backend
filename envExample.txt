@@ -1,0 +1,9 @@
+PORT=3001.
+APP_URL="http://localhost:3001/".
+DEBUG= debug mode 1 or 0.
+TIME_ZONE='Asia/Tehran'.
+SECRET_KEY_ENCRYPT= a secret key for encryption and decryptions.
+REDIS_URI=redis UrL.
+MONGO_DB_URL=Mongo db UrL.
+IV=A random keys for encryption and decryptions.
+SECRET_KEY_JWT=
