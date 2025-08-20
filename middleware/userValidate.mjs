@@ -156,3 +156,10 @@ export const userLogin = [
     .isEmail()
     .withMessage("Provide valid email"),
 ];
+export const refreshToken = [
+  body("RefreshToken")
+    .exists()
+    .withMessage("token is required")
+    .isLength({ max: 80, min: 80 })
+    .withMessage("the token is not Valid"),
+];
