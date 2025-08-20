@@ -74,6 +74,15 @@ class RedisClient {
       return e.toString();
     }
   }
+  async getHashAll(key) {
+    try {
+      const result = await this.#ioredis.hgetall(key);
+      return result ? result : "";
+    } catch (e) {
+      log(e);
+      return e.toString();
+    }
+  }
   async delHash(key) {
     try {
       return await this.#ioredis.del(key);
@@ -82,13 +91,13 @@ class RedisClient {
       return e.toString();
     }
   }
-  async ftSearchUserToken(value) {
+  async ftSearchUserTokenId(value) {
     // A function is created to build an FT index for FT.SEARCH in Redis, then the value is searched and the result is returned.
     try {
-      if (!(await this.checkFtIndex("userToken"))) {
+      if (!(await this.checkFtIndex("userTokenid"))) {
         await this.#ioredis.call(
           "FT.CREATE",
-          "userToken",
+          "userTokenid",
           "ON",
           "HASH",
           "PREFIX",
@@ -98,14 +107,50 @@ class RedisClient {
           "id",
           "TEXT",
           "rT",
+          "TEXT",
+          "email",
           "TEXT"
         );
       }
 
       const result = await this.#ioredis.call(
         "FT.SEARCH",
-        "userToken",
+        "userTokenid",
         `@id:${value}`
+      );
+
+      if (result[0] === 0) return false;
+      return result;
+    } catch (e) {
+      log(e);
+    }
+  }
+  async ftSearchUserTokenIdEmail(value) {
+    // A function is created to build an FT index for FT.SEARCH in Redis, then the value is searched and the result is returned.
+    try {
+      if (!(await this.checkFtIndex("userTokenemail"))) {
+        await this.#ioredis.call(
+          "FT.CREATE",
+          "userTokenemail",
+          "ON",
+          "HASH",
+          "PREFIX",
+          "1",
+          "UserToken:",
+          "SCHEMA",
+          "id",
+          "TEXT",
+          "rT",
+          "TEXT",
+          "email",
+          "TEXT"
+        );
+      }
+
+      const result = await this.#ioredis.call(
+        "FT.SEARCH",
+        "userTokenemail",
+        `@email:${value}`
       );
 
       if (result[0] === 0) return false;
