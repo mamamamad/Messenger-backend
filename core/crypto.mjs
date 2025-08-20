@@ -87,7 +87,21 @@ class Crypto {
       log(e);
     }
   }
-  async jwtGenerator(data) {
+  stringtoBase64(value) {
+    try {
+      return btoa(value);
+    } catch (e) {
+      log(e);
+    }
+  }
+  base64ToString(valus) {
+    try {
+      return atob(valus);
+    } catch (e) {
+      log(e);
+    }
+  }
+  jwtGenerator(data) {
     //  In this function, a JWT token is created with specific data and saved in Redis with a random ID. This ID is unique for each user.
     try {
       let JwtSecret = getEnv("SECRET_KEY_JWT");
