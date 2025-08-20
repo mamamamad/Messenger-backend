@@ -6,12 +6,11 @@
  */
 
 import crypto, { hash } from "crypto";
-import { log, getEnv, setEnv } from "./utils.mjs";
+import { log, getEnv, setEnv, genaratorToken } from "./utils.mjs";
 import { json } from "stream/consumers";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import redis from "./redis.mjs";
-import { genaratorToken } from "./utils.mjs";
 
 /**
  * Crypto class for encrypting and decrypting data.
@@ -92,22 +91,8 @@ class Crypto {
     //  In this function, a JWT token is created with specific data and saved in Redis with a random ID. This ID is unique for each user.
     try {
       let JwtSecret = getEnv("SECRET_KEY_JWT");
-      let userToken = null;
-      let existedToken = null;
-      do {
-        userToken = genaratorToken(20);
-        existedToken = await redis.redis1.ftSearchJwtToken(userToken);
-      } while (existedToken.length > 1);
-
-      const userData = { id: userToken, email: data };
-      const result = await redis.redis1.setHash(
-        `UserEmail:${data}`,
-        userData,
-        3600
-      );
-
-      const token = jwt.sign({ userId: userToken }, JwtSecret, {
-        expiresIn: "1h",
+      const token = jwt.sign({ email: data }, JwtSecret, {
+        expiresIn: "15m",
       });
       return token;
     } catch (e) {
