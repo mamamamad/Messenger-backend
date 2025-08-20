@@ -14,11 +14,12 @@ import {
   userRegester,
   emailValidate,
   userLogin,
+  refreshToken,
 } from "../middleware/userValidate.mjs";
 import validateBody from "../middleware/validateBodyReq.mjs";
-import UserController from "../controller/Usercontroller.mjs";
+import AuthController from "../controller/Authcontroller.mjs";
 
-const userCon = new UserController();
+const authCon = new AuthController();
 /**
  * Router for user authentication endpoint.
  */
@@ -42,14 +43,20 @@ route.post(
   "/login",
   userLogin,
   new validateBody(["email", "password"]).handle,
-  (req, res) => userCon.userLogin(req, res)
+  (req, res) => authCon.userLogin(req, res)
 );
 route.post(
   "/register",
   userRegester,
   new validateBody(["Fname", "Lname", "username", "email", "pass1", "pass2"])
     .handle,
-  userCon.register
+  authCon.register
+);
+route.post(
+  "/refreshtoken",
+  refreshToken,
+  new validateBody(["RefreshToken"]).handle,
+  authCon.refreshToken
 );
 // route.post(
 //   "/send-otp",
