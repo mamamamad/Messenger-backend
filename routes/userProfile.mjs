@@ -7,7 +7,4 @@ const route = Router();
 
 route.get("/", authJwt, userCon.profile);
 
-
-
-
 export default route;
