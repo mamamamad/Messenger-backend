@@ -93,4 +93,30 @@ export default {
       },
     },
   },
+  "/api/Auth/refreshtoken": {
+    post: {
+      tags: ["Users"],
+      summary: "refreshtoken",
+      description: `refreshtoken 
+      Codes =>
+         0 -> fail operations  
+         1 -> success operations
+      `,
+      produces: ["application/json"],
+      parameters: [
+        {
+          name: "RefreshToken",
+          in: "formData",
+          description: "Must be 80 char",
+          required: false,
+          type: "string",
+        },
+      ],
+      responses: {
+        200: {
+          description: "successful",
+        },
+      },
+    },
+  },
 };
