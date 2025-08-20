@@ -358,6 +358,21 @@ class AurhController extends BaseController {
       log(e);
     }
   }
-  async logOut(req, res) {}
+  async logOut(req, res) {
+    try {
+      const refreshToken = req.body.RefreshToken;
+      let existToken = await redis.redis1.getHashAll(
+        `UserToken:${refreshToken}`
+      );
+      if (Object.keys(existToken).length) {
+        await redis.redis1.delHash(`UserToken:${refreshToken}`);
+        res.json({ code: 1, msg: "log out." });
+      } else {
+        res.json({ code: 0, msg: "the Token is not exist." });
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
 }
 export default AurhController;
