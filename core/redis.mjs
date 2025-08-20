@@ -74,7 +74,7 @@ class RedisClient {
       return e.toString();
     }
   }
-  async delHash(key, value) {
+  async delHash(key) {
     try {
       return await this.#ioredis.del(key);
     } catch (e) {
@@ -82,7 +82,7 @@ class RedisClient {
       return e.toString();
     }
   }
-  async ftSearchJwtToken(value) {
+  async ftSearchUserToken(value) {
     // A function is created to build an FT index for FT.SEARCH in Redis, then the value is searched and the result is returned.
     try {
       if (!(await this.checkFtIndex("userToken"))) {
@@ -93,11 +93,11 @@ class RedisClient {
           "HASH",
           "PREFIX",
           "1",
-          "UserEmail:",
+          "UserToken:",
           "SCHEMA",
           "id",
           "TEXT",
-          "email",
+          "rT",
           "TEXT"
         );
       }
@@ -107,7 +107,7 @@ class RedisClient {
         "userToken",
         `@id:${value}`
       );
-      
+
       if (result[0] === 0) return false;
       return result;
     } catch (e) {
