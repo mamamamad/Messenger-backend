@@ -8,7 +8,7 @@ import { validationResult } from "express-validator";
 
 import BaseController from "../core/Basecontroller.mjs";
 import Redis from "./../core/redis.mjs";
-import { log, genaratorOtpToken } from "../core/utils.mjs";
+import { log, genaratorOtpToken, genaratorToken } from "../core/utils.mjs";
 
 import { UserModel } from "../globalMoudles.mjs";
 import crypto from "../core/crypto.mjs";
@@ -55,8 +55,33 @@ class UserController extends BaseController {
             password
           );
           if (passwordIsValid) {
-            const jwtToken = await crypto.jwtGenerator(email);
-            return res.json({ code: 1, msg: "login success", token: jwtToken });
+            const data = await this.userModel.userExistEmail(email);
+            var tokenExist = await redis.redis1.ftSearchUserToken(data[0].id);
+
+            if (!tokenExist) {
+              const { refreshToken, accessToken } = await this.#createToken(
+                data[0].id,
+                data[0].email
+              );
+              return res.json({
+                code: 1,
+                msg: "login success",
+                refreshToken: refreshToken,
+                accessToken: accessToken,
+              });
+            } else {
+              await redis.redis1.delHash(tokenExist[1]);
+              const { refreshToken, accessToken } = await this.#createToken(
+                data[0].id,
+                data[0].email
+              );
+              return res.json({
+                code: 1,
+                msg: "login success",
+                refreshToken: refreshToken,
+                accessToken: accessToken,
+              });
+            }
           } else {
             return res.status(400).json({
               code: 0,
@@ -214,7 +239,25 @@ class UserController extends BaseController {
       log(e);
     }
   }
+  async #createToken(id, email) {
+    try {
+      const refreshToken = genaratorToken(40);
+      const accessToken = await crypto.jwtGenerator(email);
+      const refreshtokenData = {
+        id: id,
+        rT: refreshToken,
+      };
+      let result = await redis.redis1.setHash(
+        `UserToken:${refreshToken}`,
+        refreshtokenData,
+        561600
+      );
 
+      return { refreshToken, accessToken };
+    } catch (e) {
+      log(e);
+    }
+  }
   async register(req, res) {
     try {
       //This function is used to register a user, verify their information, and save it to the database.
@@ -268,9 +311,10 @@ class UserController extends BaseController {
       log(e);
     }
   }
+
+  async refreshToken(req, res) {}
   async profile(req, res) {
-    const userEmail = await redis.redis1.ftSearchJwtToken(req.userId);
-    
+    log(req.userId);
 
     res.json({ msg: "ok" });
   }
