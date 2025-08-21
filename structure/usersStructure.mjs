@@ -17,5 +17,10 @@ export default new Schema({
     type: Boolean,
     default: true,
   },
+  avatar: {
+    type: String,
+    default: "/avatar/defualt.png",
+  },
+
   date: { type: Date, default: Date.now },
 });
