@@ -19,7 +19,7 @@ class Usermodel {
     }
   }
   async userExistEmail(value) {
-    //check the email exist in database.
+    //check the email exist in database And retrieve all data.
     try {
       const result = await this.#model2.find({ email: value }).exec();
 
@@ -32,22 +32,8 @@ class Usermodel {
       log(e);
     }
   }
-  async userData(value) {
-    //check the email exist in database.
-    try {
-      const result = await this.#model2.find({ email: value }).exec();
 
-      if (result.length !== 0) {
-        return result;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      log(e);
-    }
-  }
   async updateValue(key, value) {
-   
     try {
       let updatecDoc = { $set: value };
       const result = await this.#model2.updateOne(key, updatecDoc);
@@ -61,7 +47,7 @@ class Usermodel {
     }
   }
   async userExistUsername(value) {
-    //check the email exist in database.
+    //check the username exist in database And retrieve all data.
     try {
       const result = await this.#model2.find({ username: value }).exec();
 
