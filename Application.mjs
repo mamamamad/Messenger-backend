@@ -40,6 +40,14 @@ class Application {
     this.#app.use(express.json({ limit: "10mb" }));
     this.#app.use(cookieParser());
     this.#app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(sw));
+    // this.#app.use(
+    //   fileUpload({
+    //     limits: {
+    //       fileSize: 10000000, // Around 10MB
+    //     },
+    //     abortOnLimit: true,
+    //   })
+    // );
   }
 
   /**
@@ -59,7 +67,7 @@ class Application {
   async #initCors() {
     this.#app.use(
       cors({
-        origin: "http://localhost:3000",
+        origin: ["http://localhost:3000", "http://localhost:3001"],
         credentials: true,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],

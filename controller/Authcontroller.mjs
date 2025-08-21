@@ -3,20 +3,19 @@
  * --------------
  * Handles user authentication and login logic.
  */
-import { encode } from "html-entities";
+
 import { validationResult } from "express-validator";
-
 import BaseController from "../core/Basecontroller.mjs";
-import Redis from "./../core/redis.mjs";
-import { log, genaratorOtpToken, genaratorCookie } from "../core/utils.mjs";
-
-import { UserModel } from "../globalMoudles.mjs";
+import Redis from "../core/redis.mjs";
+import { log, genaratorOtpToken, genaratorToken } from "../core/utils.mjs";
+import { MongoDb, UserModel } from "../globalMoudles.mjs";
 import crypto from "../core/crypto.mjs";
+import redis from "../core/redis.mjs";
 
 /**
  * Controller for user authentication.
  */
-class UserController extends BaseController {
+class AurhController extends BaseController {
   constructor() {
     super();
     this.userModel = UserModel;
@@ -33,7 +32,7 @@ class UserController extends BaseController {
    * @param {object} res - Express response object.
    */
   async userLogin(req, res) {
-    // This function is used to log in a user, verify their email and password, and generate a JWT token for them
+    // This function is used to log in a user, verify their email and password, and generate a JWT token for access token and a refresh token.
     try {
       const err = validationResult(req);
       if (!err.isEmpty()) {
@@ -54,8 +53,50 @@ class UserController extends BaseController {
             password
           );
           if (passwordIsValid) {
-            return res.json({ code: 1, msg: "login success" });
-            //add jwt token
+            const data = await this.userModel.userExistEmail(email);
+            var tokenExist = await redis.redis1.ftSearchUserTokenId(data[0].id);
+
+            if (!tokenExist) {
+              await redis.redis1.delHash(tokenExist[1]);
+              const { refreshToken, accessToken } = await this.#createToken(
+                data[0].id,
+                data[0].email
+              );
+              res.cookie("accessToken", accessToken, {
+                maxAge: 15 * 60 * 1000,
+                httpOnly: true,
+                secure: true,
+              });
+              res.cookie("refreshToken", refreshToken, {
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+                secure: true,
+              });
+              return res.json({
+                code: 1,
+                msg: "login success",
+              });
+            } else {
+              await redis.redis1.delHash(tokenExist[1]);
+              const { refreshToken, accessToken } = await this.#createToken(
+                data[0].id,
+                data[0].email
+              );
+              res.cookie("accessToken", accessToken, {
+                maxAge: 15 * 60 * 1000,
+                httpOnly: true,
+                secure: true,
+              });
+              res.cookie("refreshToken", refreshToken, {
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+                secure: true,
+              });
+              return res.json({
+                code: 1,
+                msg: "login success",
+              });
+            }
           } else {
             return res.status(400).json({
               code: 0,
@@ -213,7 +254,26 @@ class UserController extends BaseController {
       log(e);
     }
   }
+  async #createToken(id, email) {
+    try {
+      const refreshToken = genaratorToken(40);
+      const accessToken = crypto.jwtGenerator(email);
+      const refreshtokenData = {
+        id: id,
+        rT: refreshToken,
+        email: crypto.stringtoBase64(email),
+      };
+      let result = await redis.redis1.setHash(
+        `UserToken:${refreshToken}`,
+        refreshtokenData,
+        561600
+      );
 
+      return { refreshToken, accessToken };
+    } catch (e) {
+      log(e);
+    }
+  }
   async register(req, res) {
     try {
       //This function is used to register a user, verify their information, and save it to the database.
@@ -231,8 +291,7 @@ class UserController extends BaseController {
       const existEmailusername = await this.userModel.userExistUsername(
         username
       );
-      log(existEmailemail);
-      log(existEmailusername);
+
       if (!existEmailusername && !existEmailemail) {
         if (pass1 === pass2) {
           const hashPassword = await crypto.hashArogo2(pass2);
@@ -268,5 +327,52 @@ class UserController extends BaseController {
       log(e);
     }
   }
+  async refreshToken(req, res) {
+    try {
+      const err = validationResult(req);
+      if (!err.isEmpty()) {
+        return res.status(403).json({
+          code: 0,
+          msg: "fail login",
+          error: err.errors.map((e) => e.msg),
+        });
+      }
+      const refreshToken = req.body.RefreshToken;
+
+      let existToken = await redis.redis1.getHashAll(
+        `UserToken:${refreshToken}`
+      );
+      const userData = await this.userModel.userExistId(existToken.id);
+      if (Object.keys(existToken).length) {
+        const accessToken = crypto.jwtGenerator(userData[0].email);
+        res.cookie("accessToken", accessToken, {
+          maxAge: 15 * 60 * 1000,
+          httpOnly: true,
+          secure: true,
+        });
+        res.json({ code: 1 });
+      } else {
+        res.status(400).json({ code: 0, msg: "Refresh Token is not find" });
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
+  async logOut(req, res) {
+    try {
+      const refreshToken = req.body.RefreshToken;
+      let existToken = await redis.redis1.getHashAll(
+        `UserToken:${refreshToken}`
+      );
+      if (Object.keys(existToken).length) {
+        await redis.redis1.delHash(`UserToken:${refreshToken}`);
+        res.json({ code: 1, msg: "log out." });
+      } else {
+        res.json({ code: 0, msg: "the Token is not exist." });
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
 }
-export default UserController;
+export default AurhController;

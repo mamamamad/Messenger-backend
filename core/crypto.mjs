@@ -6,9 +6,11 @@
  */
 
 import crypto, { hash } from "crypto";
-import { log, getEnv, setEnv } from "./utils.mjs";
+import { log, getEnv, setEnv, genaratorToken } from "./utils.mjs";
 import { json } from "stream/consumers";
 import argon2 from "argon2";
+import jwt from "jsonwebtoken";
+import redis from "./redis.mjs";
 
 /**
  * Crypto class for encrypting and decrypting data.
@@ -81,6 +83,32 @@ class Crypto {
     try {
       const result = await argon2.verify(hash, value);
       return result;
+    } catch (e) {
+      log(e);
+    }
+  }
+  stringtoBase64(value) {
+    try {
+      return btoa(value);
+    } catch (e) {
+      log(e);
+    }
+  }
+  base64ToString(valus) {
+    try {
+      return atob(valus);
+    } catch (e) {
+      log(e);
+    }
+  }
+  jwtGenerator(data) {
+    //  In this function, a JWT token is created with specific data and saved in Redis with a random ID. This ID is unique for each user.
+    try {
+      let JwtSecret = getEnv("SECRET_KEY_JWT");
+      const token = jwt.sign({ email: data }, JwtSecret, {
+        expiresIn: "15m",
+      });
+      return token;
     } catch (e) {
       log(e);
     }
