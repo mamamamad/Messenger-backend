@@ -113,13 +113,13 @@ class RedisClient {
         );
       }
 
-      const result = await this.#ioredis.call(
+      let result = await this.#ioredis.call(
         "FT.SEARCH",
         "userTokenid",
         `@id:${value}`
       );
 
-      if (result[0] === 0) return false;
+      result = result.length === 0 ? false : this.arrayTokenToJson(result);
       return result;
     } catch (e) {
       log(e);
@@ -147,17 +147,36 @@ class RedisClient {
         );
       }
 
-      const result = await this.#ioredis.call(
+      let result = await this.#ioredis.call(
         "FT.SEARCH",
         "userTokenemail",
         `@email:${value}`
       );
+      result = result.length === 0 ? false : this.arrayTokenToJson(result);
 
-      if (result[0] === 0) return false;
       return result;
     } catch (e) {
       log(e);
     }
+  }
+  arrayTokenToJson(arr) {
+    const obj = { data: {} };
+    for (let i = 0; i < arr.length; i += 1) {
+      if (typeof arr[i] === "object") {
+        let data = arr[i];
+        for (let j = 0; j < data.length; j += 2) {
+          let key = data[j];
+          let value = data[j + 1];
+          obj.data[key] = value;
+        }
+      } else if (i === 0) {
+        obj.status = arr[i];
+      } else {
+        obj.token = arr[i];
+      }
+    }
+
+    return obj;
   }
   async checkFtIndex(val) {
     try {
