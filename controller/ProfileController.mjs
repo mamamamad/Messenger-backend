@@ -73,7 +73,7 @@ class ProfileController extends BaseController {
   async profile(req, res) {
     try {
       const userEmail = req.userEmail;
-      const result = await this.userModel.userData(userEmail);
+      const result = await this.userModel.userExistEmail(userEmail);
       const userData = {
         email: result[0].email,
         Fname: result[0].Fname,
