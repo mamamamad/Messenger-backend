@@ -64,6 +64,7 @@ route.post(
   new validateBody(["RefreshToken"]).handle,
   authCon.logOut
 );
+
 // route.post(
 //   "/send-otp",
 //   emailValidate,
