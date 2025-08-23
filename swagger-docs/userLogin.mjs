@@ -224,6 +224,106 @@ export default {
       },
     },
   },
+
+  "/api/Profile/updateProfile": {
+    put: {
+      tags: ["Profile"],
+      summary: "delete Profile",
+      description:
+        "update Profile\nCodes =>\n0 -> fail operations\n1 -> success operations",
+      parameters: [
+        {
+          name: "username",
+          in: "formdata",
+          description: "new username",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "Fname",
+          in: "formdata",
+          description: "new first name",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "Lname",
+          in: "formdata",
+          description: "new last name",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "Successful",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  code: { type: "integer" },
+                  msg: { type: "string" },
+                  avatar: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "/api/Profile/changeEmail": {
+    put: {
+      tags: ["Profile"],
+      summary: "chang eEmail",
+      description:
+        "change Email\nCodes =>\n0 -> fail operations\n1 -> success operations",
+      parameters: [
+        {
+          name: "newEmail",
+          in: "formdata",
+          description: "newEmail",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "password",
+          in: "formdata",
+          description: "password",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "Successful",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  code: { type: "integer" },
+                  msg: { type: "string" },
+                  avatar: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   "/api/Profile/deleteProfilePicture": {
     delete: {
       tags: ["Profile"],
