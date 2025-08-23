@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { getEnv } from "../core/utils.mjs";
-import { UserModel } from "../globalMoudles.mjs";
+
 import { log } from "../core/utils.mjs";
 import redis from "../core/redis.mjs";
 import crypto from "../core/crypto.mjs";
@@ -32,7 +32,6 @@ export async function authJwt(req, res, next) {
 
     if (base64Code === existRefreshToken.data.email) {
       req.userEmail = decoded.email;
-      log(req.userEmail);
       return next();
     }
     return res.status(401).json({ error: "Invalid token" });
