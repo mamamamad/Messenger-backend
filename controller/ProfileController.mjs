@@ -3,25 +3,19 @@
  * --------------
  * Handles user authentication and login logic.
  */
-import { encode } from "html-entities";
+
 import { validationResult } from "express-validator";
 import BaseController from "../core/Basecontroller.mjs";
-import Redis from "../core/redis.mjs";
-import {
-  log,
-  genaratorOtpToken,
-  genaratorToken,
-  getEnv,
-} from "../core/utils.mjs";
+import { log, getEnv } from "../core/utils.mjs";
 import multer from "multer";
 import { UserModel } from "../globalMoudles.mjs";
-import crypto from "../core/crypto.mjs";
-import redis from "../core/redis.mjs";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import util from "util";
-import { PassThrough } from "stream";
+import crypto from "../core/crypto.mjs";
+import redis from "../core/redis.mjs";
+
 /**
  * Controller for  User Profile.
  */
@@ -148,6 +142,134 @@ class ProfileController extends BaseController {
         res.json({ code: 1, msg: "Profile deleted." });
       } else {
         res.json({ code: 0, msg: "you dont have a picture profile." });
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
+  async updatePersonalData(req, res) {
+    try {
+      const err = validationResult(req);
+      if (!err.isEmpty()) {
+        return res.status(403).json({
+          code: 0,
+          msg: "fail login",
+          error: err.errors.map((e) => e.msg),
+        });
+      }
+      let fields = req.body;
+      Object.keys(fields).forEach((field) => {
+        if (!req.body[field]) {
+          delete fields[field];
+        }
+      });
+      if (Object.keys(fields).length === 0) {
+        return res.status(403).json({
+          code: 0,
+          msg: "No data available for update",
+        });
+      } else {
+        const usernameExist = await this.userModel.userExistUsername(
+          fields.username
+        );
+        log(usernameExist);
+        if (usernameExist && req.userEmail !== usernameExist[0].email) {
+          return res.json({
+            code: 0,
+            msg: "the username is exist.",
+          });
+        }
+
+        let key = { email: req.userEmail };
+        const result = await this.userModel.updateValue(key, fields);
+
+        if (result.modifiedCount === 1) {
+          return res.json({
+            code: 1,
+            msg: "the Profile updated",
+          });
+        } else if (result.modifiedCount === 0) {
+          return res.json({
+            code: 0,
+            msg: "The data you provided already exists.",
+          });
+        } else {
+          return res.json({
+            code: 0,
+            msg: "error please again.",
+          });
+        }
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
+  async changEmail(req, res) {
+    // This function checks if the new email does not exist and the password is correct, then it changes the email and sets the new one.
+    try {
+      const err = validationResult(req);
+      if (!err.isEmpty()) {
+        return res.status(403).json({
+          code: 0,
+          msg: "fail login",
+          error: err.errors.map((e) => e.msg),
+        });
+      }
+      const { newEmail, password } = req.body;
+      let existNewEmail = await this.userModel.userExistEmail(newEmail);
+      log(req.userEmail);
+      if (existNewEmail) {
+        return res
+          .status(400)
+          .json({ code: 0, msg: "the new email is exist." });
+      }
+      if (req.userEmail) {
+        const resultUser = await this.userModel.userExistEmail(req.userEmail);
+        const verifyPass = await crypto.checkArgonValid(
+          resultUser[0].password,
+          password
+        );
+
+        if (verifyPass) {
+          const result = await this.userModel.updateValue(
+            { email: req.userEmail },
+            { email: newEmail }
+          );
+          if (result.modifiedCount === 1) {
+            this.clearToken(req.userEmail);
+            if (result) {
+              return res.json({ code: 1, msg: "the email is changed." });
+            }
+            return res
+              .status(400)
+              .json({ code: 0, msg: "the operations error." });
+          } else {
+            return res
+              .status(400)
+              .json({ code: 0, msg: "the operations error." });
+          }
+        } else {
+          return res
+            .status(400)
+            .json({ code: 0, msg: "the Password in wrong." });
+        }
+      } else {
+        return res.status(400).json({ code: 0, msg: "the Email not found." });
+      }
+    } catch (e) {
+      log(e);
+    }
+  }
+  async clearToken(email) {
+    try {
+      let existUser = await redis.redis1.ftSearchUserTokenIdEmail(
+        crypto.stringtoBase64(email)
+      );
+      let result = await redis.redis1.delHash(existUser.token);
+      if (Object.keys(result).length > 1) {
+        return true;
+      } else {
+        return false;
       }
     } catch (e) {
       log(e);
