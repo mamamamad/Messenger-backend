@@ -79,7 +79,7 @@ class Crypto {
     const result = await argon2.hash(password);
     return result;
   }
-  async checkHashValid(hash, value) {
+  async checkArgonValid(hash, value) {
     try {
       const result = await argon2.verify(hash, value);
       return result;
