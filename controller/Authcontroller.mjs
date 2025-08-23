@@ -48,16 +48,15 @@ class AurhController extends BaseController {
 
       if (userExist) {
         if (userExist[0].status) {
-          const passwordIsValid = await crypto.checkHashValid(
+          const passwordIsValid = await crypto.checkArgonValid(
             userExist[0].password,
             password
           );
           if (passwordIsValid) {
             const data = await this.userModel.userExistEmail(email);
             var tokenExist = await redis.redis1.ftSearchUserTokenId(data[0].id);
-
-            if (!tokenExist) {
-              await redis.redis1.delHash(tokenExist[1]);
+            if (Object.keys(tokenExist).length > 1) {
+              await redis.redis1.delHash(tokenExist.token);
               const { refreshToken, accessToken } = await this.#createToken(
                 data[0].id,
                 data[0].email
@@ -77,11 +76,6 @@ class AurhController extends BaseController {
                 msg: "login success",
               });
             } else {
-              await redis.redis1.delHash(tokenExist[1]);
-              const { refreshToken, accessToken } = await this.#createToken(
-                data[0].id,
-                data[0].email
-              );
               res.cookie("accessToken", accessToken, {
                 maxAge: 15 * 60 * 1000,
                 httpOnly: true,
@@ -366,7 +360,7 @@ class AurhController extends BaseController {
       );
       if (Object.keys(existToken).length) {
         await redis.redis1.delHash(`UserToken:${refreshToken}`);
-        res.json({ code: 1, msg: "log out." });
+        res.clearCookie.json({ code: 1, msg: "log out." });
       } else {
         res.json({ code: 0, msg: "the Token is not exist." });
       }
