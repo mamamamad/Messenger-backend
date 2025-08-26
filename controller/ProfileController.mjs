@@ -27,7 +27,6 @@ class ProfileController extends BaseController {
     try {
       super();
       this.userModel = UserModel;
-      const __filename = fileURLToPath(import.meta.url);
       this.__dirname = getEnv("BASE_PATH");
       this.#storage = multer.diskStorage({
         destination: path.join(this.__dirname, "/media/avatars/"),
