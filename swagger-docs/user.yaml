@@ -346,7 +346,7 @@ paths:
                     type: string
 
   /api/Chat/EditMessage:
-    post:
+    put:
       tags:
         - Chat
       summary: Edit Message
@@ -382,7 +382,43 @@ paths:
                     type: string
                   avatar:
                     type: string
-
+  /api/Chat/UploadFile:
+    post:
+      tags:
+        - Chat
+      summary: Upload File to 20 mg and just jpeg, jpg, png ,mp4
+      description: |
+        Upload Profile
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      security:
+        - jwtToken: []
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                File:
+                  type: string
+                  format: binary
+                  description: upload Profile
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  avatar:
+                    type: string
 components:
   securitySchemes:
     jwtToken:
