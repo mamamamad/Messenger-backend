@@ -184,7 +184,7 @@ export default {
   "/api/Profile/uploadProfilePicture": {
     put: {
       tags: ["Profile"],
-      summary: "Upload Profile",
+      summary: "Upload Profile Picture",
       description:
         "Upload Profile\nCodes =>\n0 -> fail operations\n1 -> success operations",
       parameters: [
@@ -228,7 +228,7 @@ export default {
   "/api/Profile/updateProfile": {
     put: {
       tags: ["Profile"],
-      summary: "delete Profile",
+      summary: "update Profile",
       description:
         "update Profile\nCodes =>\n0 -> fail operations\n1 -> success operations",
       parameters: [
@@ -327,10 +327,91 @@ export default {
   "/api/Profile/deleteProfilePicture": {
     delete: {
       tags: ["Profile"],
-      summary: "delete Profile",
+      summary: "delete Profile Picture ",
       description:
         "delete Profile\nCodes =>\n0 -> fail operations\n1 -> success operations",
       parameters: [
+        {
+          name: "Authorization",
+          in: "header",
+          description: "JWT token",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "Successful",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  code: { type: "integer" },
+                  msg: { type: "string" },
+                  avatar: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "/api/Chat/PublicChat": {
+    get: {
+      tags: ["Chat"],
+      summary: "retirve Public chat",
+      description:
+        "retirve Public chat \nCodes =>\n0 -> fail operations\n1 -> success operations",
+      parameters: [
+        {
+          name: "Authorization",
+          in: "header",
+          description: "JWT token",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "Successful",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  code: { type: "integer" },
+                  msg: { type: "string" },
+                  avatar: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "/api/Chat/DeleteMessage{id}": {
+    get: {
+      tags: ["Chat"],
+      summary: "delete Message ",
+      description:
+        "delete Message \nCodes =>\n0 -> fail operations\n1 -> success operations",
+      parameters: [
+        {
+          name: "id",
+          in: "path",
+          description: "Message id",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
         {
           name: "Authorization",
           in: "header",
