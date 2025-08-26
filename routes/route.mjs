@@ -8,6 +8,7 @@
 import { Router } from "express";
 import userAuthRoute from "./userAuth.mjs";
 import userProfileRoute from "./userProfile.mjs";
+import chat from "./chat.mjs";
 
 /**
  * Main application router.
@@ -16,5 +17,6 @@ const route = Router();
 
 route.use("/Auth", userAuthRoute);
 route.use("/Profile", userProfileRoute);
+route.use("/Chat", chat);
 
 export default route;
