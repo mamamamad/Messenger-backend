@@ -17,6 +17,13 @@ class timeDate {
       log(e);
     }
   }
+  timeToTimeZone(time) {
+    try {
+      return moment(time).tz(this.#timeZone).format("YYYY-MM-DD HH:mm:ss");
+    } catch (e) {
+      log(e);
+    }
+  }
 }
 
 export default new timeDate();
