@@ -53,7 +53,7 @@ class AurhController extends BaseController {
             password
           );
           if (passwordIsValid) {
-            const data = await this.userModel.userExistEmail(email);
+             const data = await this.userModel.userExistEmail(email);
             var tokenExist = await redis.redis1.ftSearchUserTokenId(data[0].id);
             if (Object.keys(tokenExist).length > 1) {
               await redis.redis1.delHash(tokenExist.token);

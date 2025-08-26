@@ -30,16 +30,17 @@ class ChatController extends BaseController {
       const __filename = fileURLToPath(import.meta.url);
       this.__dirname = getEnv("BASE_PATH");
       this.#storage = multer.diskStorage({
-        destination: path.join(this.__dirname, "/media/avatars/"),
+        destination: path.join(this.__dirname, "/media/Files/"),
         filename: function (req, file, cb) {
-          cb(null, Date.now() + path.extname(file.originalname));
+          const rand = crypto.randomNum();
+          cb(null, Date.now() + rand + path.extname(file.originalname));
         },
       });
       this.#upload = multer({
         storage: this.#storage,
-        limits: { fileSize: 10000000 }, // 10MB file size limit
+        limits: { fileSize: 20000000 }, // 20MB file size limit
         fileFilter: this.fileFilter,
-      }).single("Profile");
+      }).single("File");
       this.uploadMiddleware = util.promisify(this.#upload);
     } catch (e) {
       log(e);
@@ -47,7 +48,7 @@ class ChatController extends BaseController {
   }
   fileFilter(req, file, cb) {
     try {
-      const allowedExtensions = /jpeg|jpg|png/;
+      const allowedExtensions = /jpeg|jpg|png|mp4/;
 
       const extname = allowedExtensions.test(
         path.extname(file.originalname).toLowerCase()
@@ -58,8 +59,30 @@ class ChatController extends BaseController {
       if (mimetype && extname) {
         cb(null, true);
       } else {
-        cb(new Error("Only images are allowed (jpeg, jpg, png)"));
+        cb(new Error("Only images are allowed (jpeg, jpg, png ,mp4)"));
       }
+    } catch (e) {
+      log(e);
+    }
+  }
+  async uploadfile(req, res) {
+    try {
+      //  function that uploads a profile picture and deletes the previous one if it exists
+      try {
+        //check the error for file mimetype and filetype.
+        await this.uploadMiddleware(req, res);
+      } catch (err) {
+        if (err instanceof multer.MulterError) {
+          return res.status(400).json({ code: 0, msg: err.message });
+        }
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ code: 0, msg: "file not exist" });
+      }
+      let pathAvatar = "/media/Files/" + req.file.filename;
+
+      return res.json({ code: 1, msg: pathAvatar });
     } catch (e) {
       log(e);
     }
@@ -67,7 +90,7 @@ class ChatController extends BaseController {
   async publicChat(req, res) {
     try {
       const data = await this.messageModel.fetchMessages("", "All");
-      
+
       var messages = await Promise.all(
         data.map(async (element) => {
           const user = await this.userModel.userExistEmail(element.from);
@@ -78,6 +101,9 @@ class ChatController extends BaseController {
             message: element.message,
             pin: element.pin,
             date: element.date,
+            username: user[0].username,
+            avatar: user[0].avatar,
+            is_Image: element.is_Image,
           };
         })
       );
