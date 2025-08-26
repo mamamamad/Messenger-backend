@@ -8,6 +8,9 @@ class RedisClient {
   constructor() {
     this.#ioredis = new Redis(getEnv("REDIS_URI"));
   }
+  get ioredis() {
+    return this.#ioredis;
+  }
   async set(key, value, ex = 0) {
     try {
       ex = ex <= 0 ? 0 : ex;
@@ -125,6 +128,7 @@ class RedisClient {
       log(e);
     }
   }
+
   async ftSearchUserTokenIdEmail(value) {
     // A function is created to build an FT index for FT.SEARCH in Redis, then the value is searched and the result is returned.
     try {
