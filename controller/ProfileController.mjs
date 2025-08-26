@@ -91,6 +91,10 @@ class ProfileController extends BaseController {
           return res.status(400).json({ code: 0, msg: err.message });
         }
       }
+
+      if (!req.file) {
+        return res.status(400).json({ code: 0, msg: "file not exist" });
+      }
       let pathAvatar = "/media/avatars/" + req.file.filename;
       const userData = await this.userModel.userExistEmail(req.userEmail);
       var resultUpload = null;
@@ -112,7 +116,7 @@ class ProfileController extends BaseController {
           console.log("File deleted successfully");
         });
       }
-      log(resultUpload);
+
       if (resultUpload.modifiedCount || resultUpload.modifiedCount === 1) {
         return res.json({ code: 1, msg: "The profile is uploaded." });
       }

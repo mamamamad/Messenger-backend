@@ -1,0 +1,391 @@
+openapi: 3.0.3
+info:
+  title: API Documentation
+  version: 1.0.0
+
+paths:
+  /api/Auth/login:
+    post:
+      tags:
+        - Users
+      summary: User Login
+      description: User Login
+        Codes =>
+        0 -> fail operations
+        1 -> success operations
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: email
+                password:
+                  type: string
+                  description: password
+      responses:
+        "200":
+          description: successful
+
+  /api/Auth/register:
+    post:
+      tags:
+        - Users
+      summary: User Register
+      description: |
+        User Register
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                pass1:
+                  type: string
+                pass2:
+                  type: string
+                username:
+                  type: string
+                Fname:
+                  type: string
+                Lname:
+                  type: string
+      responses:
+        "200":
+          description: successful
+
+  /api/Auth/refreshtoken:
+    post:
+      tags:
+        - Users
+      summary: refreshtoken
+      description: |
+        refreshtoken
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                RefreshToken:
+                  type: string
+                  description: Must be 80 char
+      responses:
+        "200":
+          description: successful
+
+  /api/Auth/logout:
+    post:
+      tags:
+        - Users
+      summary: logout
+      description: |
+        logout
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                RefreshToken:
+                  type: string
+                  description: Must be 80 char
+      responses:
+        "200":
+          description: successful
+
+  /api/Profile/:
+    get:
+      tags:
+        - Profile
+      summary: get Profile
+
+      description: |
+        get Profile
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      security:
+        - jwtToken: []
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  avatar:
+                    type: string
+
+  /api/Profile/uploadProfilePicture:
+    put:
+      tags:
+        - Profile
+      summary: Upload Profile Picture
+      description: |
+        Upload Profile
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      security:
+        - jwtToken: []
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Profile:
+                  type: string
+                  format: binary
+                  description: upload Profile
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  avatar:
+                    type: string
+
+  /api/Profile/updateProfile:
+    put:
+      tags:
+        - Profile
+      summary: update Profile
+      description: |
+        update Profile
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      security:
+        - jwtToken: []
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: new username
+                Fname:
+                  type: string
+                  description: new first name
+                Lname:
+                  type: string
+                  description: new last name
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  avatar:
+                    type: string
+
+  /api/Profile/changeEmail:
+    put:
+      tags:
+        - Profile
+      summary: change Email
+      description: |
+        change Email
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      security:
+        - jwtToken: []
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                newEmail:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  avatar:
+                    type: string
+
+  /api/Profile/deleteProfilePicture:
+    delete:
+      tags:
+        - Profile
+      summary: delete Profile Picture
+      description: |
+        delete Profile
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      security:
+        - jwtToken: []
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  avatar:
+                    type: string
+
+  /api/Chat/PublicChat:
+    get:
+      tags:
+        - Chat
+      summary: retrieve Public chat
+      description: |
+        retrieve Public chat
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      security:
+        - jwtToken: []
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  avatar:
+                    type: string
+
+  /api/Chat/DeleteMessage{id}:
+    get:
+      tags:
+        - Chat
+      summary: delete Message
+      description: |
+        delete Message
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      security:
+        - jwtToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  avatar:
+                    type: string
+
+  /api/Chat/EditMessage:
+    post:
+      tags:
+        - Chat
+      summary: Edit Message
+      description: |
+        Edit Message
+        Codes =>
+          0 -> fail operations
+          1 -> success operations
+      security:
+        - jwtToken: []
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                newMessage:
+                  type: string
+                id:
+                  type: string
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  avatar:
+                    type: string
+
+components:
+  securitySchemes:
+    jwtToken:
+      type: apiKey
+      in: header
+      name: Authorization
