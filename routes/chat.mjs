@@ -21,13 +21,18 @@ const route = Router();
 
 route.get("/PublicChat", authJwt, chatCon.publicChat);
 route.get("/DeleteMessage:id", authJwt, chatCon.deleteMessage);
-route.post(
+route.put(
   "/EditMessage",
-
-  // new validateBody(["id", "newMessage"]).handle,
+  new validateBody(["id", "newMessage"]).handle,
   authJwt,
   editMessage,
   chatCon.editMessage
+);
+route.post(
+  "/UploadFile",
+
+  authJwt,
+  chatCon.uploadfile
 );
 
 export default route;

@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import { log, getEnv } from "../core/utils.mjs";
 import jwt from "jsonwebtoken";
 import redis from "../core/redis.mjs";
-import { messageQueue } from "./../globalMoudles.mjs";
+import { messageQueue, MongoDb } from "./../globalMoudles.mjs";
 export default async function initSocket(server) {
   const io = new Server(server, {
     path: "/chat",
@@ -17,8 +17,8 @@ export default async function initSocket(server) {
     try {
       const token = socket.handshake.headers.authorization;
       if (!token) return next(new Error("Access denied"));
-
       const secretKey = getEnv("SECRET_KEY_JWT");
+
       let decoded;
 
       try {
@@ -38,6 +38,7 @@ export default async function initSocket(server) {
       let existRefreshToken = await redis.redis1.ftSearchUserTokenIdEmail(
         base64Code
       );
+      log(existRefreshToken);
 
       if (!existRefreshToken || base64Code !== existRefreshToken.data.email) {
         return next(new Error("Invalid refresh token"));
@@ -59,12 +60,34 @@ export default async function initSocket(server) {
         id: "",
         from: socket.userEmail,
         to: "All",
-        message: msg,
+        content: msg,
+        type: "text",
         pin: false,
+        replay: "",
       };
+
       const result = await messageQueue.addToQueue(JSON.stringify(data));
 
-      io.emit("replay", { Msg: msg, user: socket.userEmail });
+      io.emit("replay", { content: msg, user: socket.userEmail, type: "text" });
+    });
+    socket.on("ImageToAll", async (imageName) => {
+      const data = {
+        id: "",
+        from: socket.userEmail,
+        to: "All",
+        content: imageName.msg,
+        type: "image",
+        pin: false,
+        replay: "",
+      };
+
+      const result = await messageQueue.addToQueue(JSON.stringify(data));
+
+      io.emit("replay", {
+        Msg: imageName,
+        user: socket.userEmail,
+        type: "Image",
+      });
     });
 
     socket.on("disconnect", () => {

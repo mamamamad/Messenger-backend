@@ -11,11 +11,13 @@ export default new Schema({
     required: true,
   },
   to: { type: String, required: true },
-  message: { type: String, required: true },
+  type: { type: String, required: true },
+  content: { type: String, required: true },
   date: { type: Date, default: Date.now },
   dateEdit: { type: Date, default: Date.now },
   pin: {
     type: Boolean,
     default: true,
   },
+  replay: { type: String, default: "" },
 });
