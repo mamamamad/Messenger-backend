@@ -27,6 +27,19 @@ export const userLoginValidate = [
     .withMessage("Password must be at least 8 characters long."),
 ];
 
+export const editMessage = [
+  body("newMessage")
+    .exists()
+    .withMessage("newMessage is required")
+    .notEmpty()
+    .withMessage("the newMessage cannot be empty."),
+  body("id")
+    .exists()
+    .withMessage("id is required")
+    .notEmpty()
+    .withMessage("the id cannot be empty."),
+];
+
 /**
  * Validation rules for user login.
  * - phone number: phone number should be 11 nunumber. and start with 09

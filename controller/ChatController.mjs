@@ -67,6 +67,7 @@ class ChatController extends BaseController {
   async publicChat(req, res) {
     try {
       const data = await this.messageModel.fetchMessages("", "All");
+      
       var messages = await Promise.all(
         data.map(async (element) => {
           const user = await this.userModel.userExistEmail(element.from);
@@ -90,6 +91,11 @@ class ChatController extends BaseController {
     try {
       const id = req.params.id;
       let userData = await this.messageModel.messageExistid(id);
+      if (!userData) {
+        return res
+          .status(400)
+          .json({ code: 0, msg: "the message is not Found." });
+      }
 
       if (userData[0].from === req.userEmail) {
         const data = await this.messageModel.deleteMessage(id);
@@ -98,12 +104,46 @@ class ChatController extends BaseController {
         } else {
           return res
             .status(400)
-            .json({ code: 1, msg: "the message is not deleted." });
+            .json({ code: 0, msg: "the message is not deleted." });
         }
       }
       return res
         .status(400)
-        .json({ code: 1, msg: "you cannot delete this message." });
+        .json({ code: 0, msg: "you cannot delete this message." });
+    } catch (e) {
+      log(e);
+    }
+  }
+  async editMessage(req, res) {
+    try {
+      const err = validationResult(req);
+      if (!err.isEmpty()) {
+        return res.status(403).json({
+          code: 0,
+          msg: "edit fail",
+          error: err.errors.map((e) => e.msg),
+        });
+      }
+      const { id, newMessage } = req.body;
+      let userData = await this.messageModel.messageExistid(id);
+      if (!userData) {
+        return res
+          .status(400)
+          .json({ code: 0, msg: "the message is not Found." });
+      }
+      if (userData[0].from === req.userEmail) {
+        const result = await this.messageModel.updateMessage(id, newMessage);
+        if (result.modifiedCount || result.modifiedCount === 1) {
+          return res.json({ code: 1, msg: "the message is Edited." });
+        } else {
+          return res
+            .status(400)
+            .json({ code: 0, msg: "the message is not Edited." });
+        }
+      }
+      return res
+        .status(400)
+        .json({ code: 0, msg: "you cannot Edit this message." });
     } catch (e) {
       log(e);
     }

@@ -22,5 +22,4 @@ async function main() {
     log(e);
   }
 }
-
 await main();

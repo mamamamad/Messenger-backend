@@ -7,15 +7,7 @@
 
 import { Router } from "express";
 import { matchedData } from "express-validator";
-import {
-  userLoginValidate,
-  userRestPassword,
-  userOtpValidate,
-  userRegester,
-  emailValidate,
-  userLogin,
-  refreshToken,
-} from "../middleware/userValidate.mjs";
+import { editMessage } from "../middleware/userValidate.mjs";
 import validateBody from "../middleware/validateBodyReq.mjs";
 import ChatController from "../controller/ChatController.mjs";
 import { authJwt } from "../middleware/authMiddleware.mjs";
@@ -29,5 +21,13 @@ const route = Router();
 
 route.get("/PublicChat", authJwt, chatCon.publicChat);
 route.get("/DeleteMessage:id", authJwt, chatCon.deleteMessage);
+route.post(
+  "/EditMessage",
+
+  // new validateBody(["id", "newMessage"]).handle,
+  authJwt,
+  editMessage,
+  chatCon.editMessage
+);
 
 export default route;

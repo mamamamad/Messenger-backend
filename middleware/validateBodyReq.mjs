@@ -11,6 +11,7 @@ export default class validateBody extends BaseMiddleware {
   handle(req, res, next) {
     try {
       if (req.body == null) {
+        log(req.body);
         return this.toError("Request body is empty.", req, res);
       }
       Object.keys(req.body).forEach((element) => {

@@ -20,9 +20,10 @@ class MessageModel {
     }
   }
 
-  async updateValue(key, value) {
+  async updateMessage(id, newMessage) {
     try {
-      let updatecDoc = { $set: value };
+      let key = { id: id };
+      let updatecDoc = { $set: { message: newMessage, dateEdit: Date.now() } };
       const result = await this.#model2.updateOne(key, updatecDoc);
       if (result.length !== 0) {
         return result;
@@ -97,6 +98,7 @@ class MessageModel {
             message: element.message,
             pin: element.pin,
             date: dataTime.timeToTimeZone(element.date),
+            dateEdit: dataTime.timeToTimeZone(element.dateEdit),
           };
           data.push(messagedata);
         });
@@ -118,6 +120,7 @@ class MessageModel {
             message: element.message,
             pin: element.pin,
             date: dataTime.timeToTimeZone(element.date),
+            dateEdit: dataTime.timeToTimeZone(element.dateEdit),
           };
           data.push(messagedata);
         });
@@ -138,6 +141,7 @@ class MessageModel {
             message: element.message,
             pin: element.pin,
             date: dataTime.timeToTimeZone(element.date),
+            dateEdit: dataTime.timeToTimeZone(element.dateEdit),
           };
           data.push(messagedata);
         });
