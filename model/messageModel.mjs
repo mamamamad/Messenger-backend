@@ -1,10 +1,8 @@
 import { MongoDb } from "../globalMoudles.mjs";
 import mongoose from "mongoose";
-import timeZone from "mongoose-timezone";
 import messageSchema from "../structure/MessageStructure.mjs";
 import { log, getEnv } from "../core/utils.mjs";
 import dataTime from "../core/dataTime.mjs";
-messageSchema.plugin(timeZone, { paths: getEnv("TIME_ZONE") });
 import { v4 } from "uuid";
 class MessageModel {
   #model2 = null;
@@ -23,7 +21,7 @@ class MessageModel {
   async updateMessage(id, newMessage) {
     try {
       let key = { id: id };
-      let updatecDoc = { $set: { message: newMessage, dateEdit: Date.now() } };
+      let updatecDoc = { $set: { content: newMessage, dateEdit: Date.now() } };
       const result = await this.#model2.updateOne(key, updatecDoc);
       if (result.length !== 0) {
         return result;
@@ -75,6 +73,7 @@ class MessageModel {
       return result;
     } catch (e) {
       log(e);
+      return false;
     }
   }
   async fetchMessages(from = "", to = "") {
@@ -89,13 +88,14 @@ class MessageModel {
           .sort({ date: 1 })
           .lean({ virtuals: true })
           .exec();
-
         result.forEach((element) => {
           let messagedata = {
             id: element.id,
             from: element.from,
             to: element.to,
-            message: element.message,
+            content: element.content,
+            type: element.type,
+            replay: element.replay,
             pin: element.pin,
             date: dataTime.timeToTimeZone(element.date),
             dateEdit: dataTime.timeToTimeZone(element.dateEdit),
@@ -117,7 +117,9 @@ class MessageModel {
             id: element.id,
             from: element.from,
             to: element.to,
-            message: element.message,
+            content: element.content,
+            type: element.type,
+            replay: element.replay,
             pin: element.pin,
             date: dataTime.timeToTimeZone(element.date),
             dateEdit: dataTime.timeToTimeZone(element.dateEdit),
@@ -138,7 +140,9 @@ class MessageModel {
             id: element.id,
             from: element.from,
             to: element.to,
-            message: element.message,
+            content: element.content,
+            type: element.type,
+            replay: element.replay,
             pin: element.pin,
             date: dataTime.timeToTimeZone(element.date),
             dateEdit: dataTime.timeToTimeZone(element.dateEdit),
@@ -149,6 +153,7 @@ class MessageModel {
       }
     } catch (e) {
       log(e);
+      return false;
     }
   }
   async deleteMessage(id) {
@@ -162,6 +167,7 @@ class MessageModel {
       }
     } catch (e) {
       log(e);
+      return false;
     }
   }
   arrayTokenToJson(arr) {
