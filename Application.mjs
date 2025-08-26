@@ -5,7 +5,7 @@
  * Sets up middleware, routes, CORS, and error handling.
  */
 
-import { MongoDb, UserModel } from "./globalMoudles.mjs";
+import { MongoDb, UserModel, messageModel } from "./globalMoudles.mjs";
 
 import express from "express";
 import { log, getEnv } from "./core/utils.mjs";
@@ -16,6 +16,8 @@ import Error500 from "./controller/Error500Controller.mjs";
 import cookieParser from "cookie-parser";
 import sw from "./core/swagger.mjs";
 import swaggerUi from "swagger-ui-express";
+import http from "http";
+import initSocket from "./Socket/socket.mjs";
 /**
  * Application
  * -----------
@@ -23,6 +25,7 @@ import swaggerUi from "swagger-ui-express";
  */
 class Application {
   #app = null;
+  #server = null;
 
   /**
    * Initializes the application by setting up Express, CORS, and routes.
@@ -90,9 +93,12 @@ class Application {
         process.exit(-1);
       }
       await UserModel.init();
+      await messageModel.init();
       await this.#initExpress();
       await this.#initCors();
       await this.#initRoutes();
+      this.#server = http.createServer(this.#app);
+      await initSocket(this.#server);
     } catch (e) {
       log(e);
     }
@@ -100,7 +106,7 @@ class Application {
   async run() {
     try {
       await this.#init();
-      this.#app.listen(3001, async () => {
+      this.#server.listen(3001, async () => {
         log("listen on port 3001");
       });
     } catch (e) {
