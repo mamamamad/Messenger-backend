@@ -5,3 +5,7 @@ node_modules/
 yarn.lock
 media/
 test.mjs
+node_modules/negotiator/lib/encoding.js
+node_modules/negotiator/lib/mediaType.js
+node_modules/negotiator/package.json
+node_modules/negotiator/index.js
