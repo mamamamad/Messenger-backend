@@ -79,6 +79,14 @@ class Crypto {
     const result = await argon2.hash(password);
     return result;
   }
+  randomNum() {
+    try {
+      const random = crypto.randomBytes(8).toString("hex");
+      return random;
+    } catch (e) {
+      log(e);
+    }
+  }
   async checkArgonValid(hash, value) {
     try {
       const result = await argon2.verify(hash, value);
