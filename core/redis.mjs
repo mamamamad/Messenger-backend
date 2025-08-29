@@ -7,6 +7,9 @@ class RedisClient {
   #ftJwtIndex = null;
   constructor() {
     this.#ioredis = new Redis(getEnv("REDIS_URI"));
+
+    this.#ioredis.on("connect", () => console.log("Redis connected!"));
+    this.#ioredis.on("error", (err) => console.error("Redis Error:", err));
   }
   get ioredis() {
     return this.#ioredis;
