@@ -10,7 +10,7 @@ class MongoDB {
 
   async init(URI) {
     try {
-      this.#db = await mongoose.createConnection(URI).asPromise();
+      this.#db = await mongoose.createConnection(URI);
       return true;
     } catch (e) {
       log(`MongoDB Error : ${e.toString()}`);
