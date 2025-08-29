@@ -5,7 +5,7 @@
  * Uses a secret key from environment variables.
  */
 
-import crypto, { hash } from "crypto";
+import crypto from "crypto";
 import { log, getEnv, setEnv, genaratorToken } from "./utils.mjs";
 import { json } from "stream/consumers";
 import argon2 from "argon2";
