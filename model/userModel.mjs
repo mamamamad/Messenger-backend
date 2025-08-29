@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import timeZone from "mongoose-timezone";
 import userSchema from "./../structure/usersStructure.mjs";
 import { log, getEnv } from "../core/utils.mjs";
-import { status } from "@grpc/grpc-js";
+
 userSchema.plugin(timeZone, { paths: getEnv("TIME_ZONE") });
 class Usermodel {
   #model2 = null;
