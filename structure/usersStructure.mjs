@@ -1,6 +1,5 @@
-import { Schema } from "mongoose";
-
-
+import pkg from "mongoose";
+const { Schema } = pkg;
 export default new Schema({
   email: {
     type: String,
