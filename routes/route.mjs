@@ -14,7 +14,9 @@ import chat from "./chat.mjs";
  * Main application router.
  */
 const route = Router();
-
+route("/test", (req, res) => {
+  res.json({ msg: "hi sisi" });
+});
 route.use("/Auth", userAuthRoute);
 route.use("/Profile", userProfileRoute);
 route.use("/Chat", chat);
