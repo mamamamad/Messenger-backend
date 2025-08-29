@@ -10,7 +10,10 @@ class MongoDB {
 
   async init(URI) {
     try {
-      this.#db = await mongoose.createConnection(URI);
+      this.#db = await mongoose.createConnection(URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
       return true;
     } catch (e) {
       log(`MongoDB Error : ${e.toString()}`);
