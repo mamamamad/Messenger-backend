@@ -98,8 +98,9 @@ class Application {
   async run() {
     try {
       await this.#init();
-      this.#server.listen(3001, async () => {
-        log("listen on port 3001");
+      const port = getEnv("PORT");
+      this.#server.listen(port, async () => {
+        log(`listen on port ${port}`);
       });
     } catch (e) {
       log(e);
