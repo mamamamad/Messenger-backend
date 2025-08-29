@@ -27,7 +27,7 @@ class ChatController extends BaseController {
       super();
       this.messageModel = messageModel;
       this.userModel = UserModel;
-      const __filename = fileURLToPath(import.meta.url);
+      log(getEnv("BASE_PATH"));
       this.__dirname = getEnv("BASE_PATH");
       this.#storage = multer.diskStorage({
         destination: path.join(this.__dirname, "/media/Files/"),
