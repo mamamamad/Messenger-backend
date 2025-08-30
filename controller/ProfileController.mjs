@@ -117,7 +117,11 @@ class ProfileController extends BaseController {
       }
 
       if (resultUpload.nModified || resultUpload.nModified === 1) {
-        return res.json({ code: 1, msg: "The profile is uploaded." });
+        return res.json({
+          code: 1,
+          msg: "The profile is uploaded.",
+          path: pathAvatar,
+        });
       }
       return res
         .status(400)
