@@ -19,7 +19,7 @@ export default new Schema({
   },
   avatar: {
     type: String,
-    default: "/avatar/defualt.png",
+    default: "/media/avatar/defualt.png",
   },
 
   date: { type: Date, default: Date.now },
