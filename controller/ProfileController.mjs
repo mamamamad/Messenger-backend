@@ -115,7 +115,7 @@ class ProfileController extends BaseController {
           console.log("File deleted successfully");
         });
       }
-      log(resultUpload.modifiedCount);
+      log(resultUpload);
       if (resultUpload.modifiedCount || resultUpload.modifiedCount === 1) {
         return res.json({ code: 1, msg: "The profile is uploaded." });
       }
