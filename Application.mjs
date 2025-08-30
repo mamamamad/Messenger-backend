@@ -43,7 +43,7 @@ class Application {
     this.#app.use(express.json({ limit: "10mb" }));
     this.#app.use(cookieParser());
     if (getEnv("DEBUG")) {
-      log(getEnv);
+      log(getEnv("DEBUG"));
       log("ho");
       this.#app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(sw));
     }
