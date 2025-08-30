@@ -44,6 +44,7 @@ class Application {
     this.#app.use(cookieParser());
     if (getEnv("DEBUG")) {
       log(getEnv);
+      log("ho");
       this.#app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(sw));
     }
   }
