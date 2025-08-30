@@ -42,7 +42,9 @@ class Application {
     this.#app.use(express.urlencoded({ extended: true, limit: "10mb" }));
     this.#app.use(express.json({ limit: "10mb" }));
     this.#app.use(cookieParser());
-    this.#app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(sw));
+    if (getEnv("DEBUG")) {
+      this.#app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(sw));
+    }
   }
 
   /**
