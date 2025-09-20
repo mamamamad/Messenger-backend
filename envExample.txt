@@ -7,3 +7,5 @@ REDIS_URI=redis UrL.
 MONGO_DB_URL=Mongo db UrL.
 IV=A random keys for encryption and decryptions.
 SECRET_KEY_JWT=
+PASSWORD_AUTH=
+USER_AUTH=

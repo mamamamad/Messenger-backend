@@ -43,11 +43,13 @@ class Application {
     this.#app.use(express.urlencoded({ extended: true, limit: "10mb" }));
     this.#app.use(express.json({ limit: "10mb" }));
     this.#app.use(cookieParser());
+    let userBasicAuth = `${getEnv("USER_AUTH")}: ${getEnv("PASSWORD_AUTH")} `;
+    log(userBasicAuth);
     if (getEnv("DEBUG") !== 0) {
       this.#app.use(
         "/api-docs",
         basicAuth({
-          users: { admin: "mamadsecret" },
+          users: { userBasicAuth },
           challenge: true,
           unauthorizedResponse: (req) => "Unauthorized",
         }),
