@@ -49,6 +49,7 @@ class Application {
         basicAuth({
           users: { admin: "mamadsecret" },
           challenge: true,
+          unauthorizedResponse: (req) => "Unauthorized",
         }),
         swaggerUi.serve,
         swaggerUi.setup(sw)
