@@ -18,6 +18,7 @@ import sw from "./core/swagger.mjs";
 import swaggerUi from "swagger-ui-express";
 import http from "http";
 import initSocket from "./Socket/socket.mjs";
+import expressBasicAuth from "express-basic-auth";
 /**
  * Application
  * -----------
@@ -43,7 +44,15 @@ class Application {
     this.#app.use(express.json({ limit: "10mb" }));
     this.#app.use(cookieParser());
     if (getEnv("DEBUG") !== 0) {
-      this.#app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(sw));
+      this.#app.use(
+        "/api-docs",
+        basicAuth({
+          users: { admin: "mamadsecret" },
+          challenge: true,
+        }),
+        swaggerUi.serve,
+        swaggerUi.setup(sw)
+      );
     }
   }
 
