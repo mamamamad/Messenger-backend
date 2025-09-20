@@ -46,12 +46,11 @@ class Application {
     let userBasicAuth = getEnv("USER_AUTH");
     let passBasicAuth = getEnv("PASSWORD_AUTH");
 
-    log(userBasicAuth);
     if (getEnv("DEBUG") !== 0) {
       this.#app.use(
         "/api-docs",
         basicAuth({
-          users: { userBasicAuth: passBasicAuth },
+          users: { [userBasicAuth]: passBasicAuth },
           challenge: true,
           unauthorizedResponse: () => ({ msg: "Unauthorized" }),
         }),
