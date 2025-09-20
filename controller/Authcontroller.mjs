@@ -358,6 +358,8 @@ class AurhController extends BaseController {
           httpOnly: true,
           secure: true,
           sameSite: "none",
+          domain: ".sisia.ir",
+          path: "/",
         });
         res.json({ code: 1 });
       } else {
