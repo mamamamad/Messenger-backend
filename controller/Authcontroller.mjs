@@ -53,7 +53,7 @@ class AurhController extends BaseController {
             password
           );
           if (passwordIsValid) {
-             const data = await this.userModel.userExistEmail(email);
+            const data = await this.userModel.userExistEmail(email);
             var tokenExist = await redis.redis1.ftSearchUserTokenId(data[0].id);
             if (Object.keys(tokenExist).length > 1) {
               await redis.redis1.delHash(tokenExist.token);
@@ -65,11 +65,13 @@ class AurhController extends BaseController {
                 maxAge: 15 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
+                sameSite: "lax",
               });
               res.cookie("refreshToken", refreshToken, {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
+                sameSite: "lax",
               });
               return res.json({
                 code: 1,
@@ -80,11 +82,13 @@ class AurhController extends BaseController {
                 maxAge: 15 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
+                sameSite: "lax",
               });
               res.cookie("refreshToken", refreshToken, {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
+                sameSite: "lax",
               });
               return res.json({
                 code: 1,
@@ -343,6 +347,7 @@ class AurhController extends BaseController {
           maxAge: 15 * 60 * 1000,
           httpOnly: true,
           secure: true,
+          sameSite: "lax",
         });
         res.json({ code: 1 });
       } else {
