@@ -66,12 +66,16 @@ class AurhController extends BaseController {
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
+                domain: ".sisia.ir",
+                path: "/",
               });
               res.cookie("refreshToken", refreshToken, {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
+                domain: ".sisia.ir",
+                path: "/",
               });
               return res.json({
                 code: 1,
@@ -83,12 +87,16 @@ class AurhController extends BaseController {
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
+                domain: ".sisia.ir",
+                path: "/",
               });
               res.cookie("refreshToken", refreshToken, {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
+                domain: ".sisia.ir",
+                path: "/",
               });
               return res.json({
                 code: 1,
@@ -184,6 +192,8 @@ class AurhController extends BaseController {
           secure: true,
           maxAge: 1000 * 60 * 5,
           sameSite: "Strict",
+          domain: ".sisia.ir",
+          path: "/",
         });
         return res.status(200).json({
           error: null,
