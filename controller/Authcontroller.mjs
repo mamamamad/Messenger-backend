@@ -65,13 +65,13 @@ class AurhController extends BaseController {
                 maxAge: 15 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
-                sameSite: "lax",
+                sameSite: "none",
               });
               res.cookie("refreshToken", refreshToken, {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
-                sameSite: "lax",
+                sameSite: "none",
               });
               return res.json({
                 code: 1,
@@ -82,13 +82,13 @@ class AurhController extends BaseController {
                 maxAge: 15 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
-                sameSite: "lax",
+                sameSite: "none",
               });
               res.cookie("refreshToken", refreshToken, {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
-                sameSite: "lax",
+                sameSite: "none",
               });
               return res.json({
                 code: 1,
@@ -347,7 +347,7 @@ class AurhController extends BaseController {
           maxAge: 15 * 60 * 1000,
           httpOnly: true,
           secure: true,
-          sameSite: "lax",
+          sameSite: "none",
         });
         res.json({ code: 1 });
       } else {
