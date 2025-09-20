@@ -143,33 +143,27 @@ export const userRegester = [
     .normalizeEmail(),
   body("Fname")
     .exists()
-    .withMessage("the fname not exsits")
-    .notEmpty()
-    .withMessage("Fname cannot be empty")
-    .isLength({ min: 4 })
-    .withMessage("the fname min lengh must be 4 char")
-    .matches(/^[A-Za-z0-9_]+$/)
-    .withMessage(
-      "Username can only contain letters, numbers, and underscores."
-    ),
-  body("Lname")
-    .exists()
-    .withMessage("the Lname not exsits")
+    .withMessage("The Lname does not exist")
     .notEmpty()
     .withMessage("Lname cannot be empty")
-
-    .isLength({ min: 4 })
-    .withMessage("the Lname min lengh must be 4 char")
-    .matches(/^[A-Za-z0-9_]+$/)
-    .withMessage(
-      "Username can only contain letters, numbers, and underscores."
-    ),
+    .isLength({ min: 2 })
+    .withMessage("The Lname minimum length must be 2 characters")
+    .matches(/^[A-Za-z0-9_\u0600-\u06FF ]+$/)
+    .withMessage("Last name must be in English or Persian"),
+  body("Lname")
+    .exists()
+    .withMessage("The Lname does not exist")
+    .notEmpty()
+    .withMessage("Lname cannot be empty")
+    .isLength({ min: 2 })
+    .withMessage("The Lname minimum length must be 2 characters")
+    .matches(/^[A-Za-z0-9_\u0600-\u06FF ]+$/)
+    .withMessage("Last name must be in English or Persian"),
   body("username")
     .exists()
     .withMessage("the username not exsits")
     .notEmpty()
     .withMessage("username cannot be empty")
-
     .isLength({ min: 3 })
     .withMessage("the username min lengh must be 3 char")
     .matches(/^[A-Za-z0-9_]+$/)
@@ -223,21 +217,23 @@ export const refreshToken = [
 ];
 export const userUpdatePersonal = [
   body("Fname")
-    .optional({ checkFalsy: true })
-    .isLength({ min: 4 })
-    .withMessage("the fname min lengh must be 4 char")
-    .matches(/^[A-Za-z0-9_]+$/)
-    .withMessage(
-      "Username can only contain letters, numbers, and underscores."
-    ),
+    .exists()
+    .withMessage("The Lname does not exist")
+    .notEmpty()
+    .withMessage("Lname cannot be empty")
+    .isLength({ min: 2 })
+    .withMessage("The Lname minimum length must be 2 characters")
+    .matches(/^[A-Za-z0-9_\u0600-\u06FF ]+$/)
+    .withMessage("Last name must be in English or Persian"),
   body("Lname")
-    .optional({ checkFalsy: true })
-    .isLength({ min: 4 })
-    .withMessage("the Lname min lengh must be 4 char")
-    .matches(/^[A-Za-z0-9_]+$/)
-    .withMessage(
-      "Username can only contain letters, numbers, and underscores."
-    ),
+    .exists()
+    .withMessage("The Lname does not exist")
+    .notEmpty()
+    .withMessage("Lname cannot be empty")
+    .isLength({ min: 2 })
+    .withMessage("The Lname minimum length must be 2 characters")
+    .matches(/^[A-Za-z0-9_\u0600-\u06FF ]+$/)
+    .withMessage("Last name must be in English or Persian"),
   body("username")
     .optional({ checkFalsy: true })
     .isLength({ min: 3 })
