@@ -51,7 +51,9 @@ class Application {
         basicAuth({
           users: { userBasicAuth },
           challenge: true,
-          unauthorizedResponse: (req) => "Unauthorized",
+          unauthorizedResponse: (req, res) => {
+            res.status(401).json({ msg: "Unauthorized" });
+          },
         }),
         swaggerUi.serve,
         swaggerUi.setup(sw)
