@@ -18,7 +18,7 @@ import sw from "./core/swagger.mjs";
 import swaggerUi from "swagger-ui-express";
 import http from "http";
 import initSocket from "./Socket/socket.mjs";
-import expressBasicAuth from "express-basic-auth";
+import basicAuth from "express-basic-auth";
 /**
  * Application
  * -----------
