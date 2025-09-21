@@ -1,6 +1,6 @@
-PORT=3001.
-APP_URL="http://localhost:3001/"
-PATH_DOMAIN=""
+PORT=3001
+APP_URL="http://localhost:3001/" // for front domian
+PATH_DOMAIN="" // for Domain cookie
 DEBUG= debug mode 1 or 0.
 TIME_ZONE='Asia/Tehran'.
 SECRET_KEY_ENCRYPT= a secret key for encryption and decryptions.
