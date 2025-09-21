@@ -1,5 +1,6 @@
 PORT=3001.
-APP_URL="http://localhost:3001/".
+APP_URL="http://localhost:3001/"
+PATH_DOMAIN=""
 DEBUG= debug mode 1 or 0.
 TIME_ZONE='Asia/Tehran'.
 SECRET_KEY_ENCRYPT= a secret key for encryption and decryptions.

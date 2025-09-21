@@ -7,7 +7,7 @@ export default async function initSocket(server) {
   const io = new Server(server, {
     path: "/chat",
     cors: {
-      origin: ["http://localhost:3000", "http://localhost:3001"],
+      origin: [getEnv("APP_URL")],
       methods: ["GET", "POST"],
       credentials: true,
     },

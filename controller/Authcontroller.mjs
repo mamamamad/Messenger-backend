@@ -7,7 +7,12 @@
 import { validationResult } from "express-validator";
 import BaseController from "../core/Basecontroller.mjs";
 import Redis from "../core/redis.mjs";
-import { log, genaratorOtpToken, genaratorToken } from "../core/utils.mjs";
+import {
+  log,
+  genaratorOtpToken,
+  genaratorToken,
+  getEnv,
+} from "../core/utils.mjs";
 import { MongoDb, UserModel } from "../globalMoudles.mjs";
 import crypto from "../core/crypto.mjs";
 import redis from "../core/redis.mjs";
@@ -66,7 +71,7 @@ class AurhController extends BaseController {
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
-                domain: ".sisia.ir",
+                domain: getEnv("PATH_DOMAIN"),
                 path: "/",
               });
               res.cookie("refreshToken", refreshToken, {
@@ -74,7 +79,7 @@ class AurhController extends BaseController {
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
-                domain: ".sisia.ir",
+                domain: getEnv("PATH_DOMAIN"),
                 path: "/",
               });
               return res.json({
@@ -87,7 +92,7 @@ class AurhController extends BaseController {
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
-                domain: ".sisia.ir",
+                domain: getEnv("PATH_DOMAIN"),
                 path: "/",
               });
               res.cookie("refreshToken", refreshToken, {
@@ -95,7 +100,7 @@ class AurhController extends BaseController {
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
-                domain: ".sisia.ir",
+                domain: getEnv("PATH_DOMAIN"),
                 path: "/",
               });
               return res.json({
@@ -192,7 +197,7 @@ class AurhController extends BaseController {
           secure: true,
           maxAge: 1000 * 60 * 5,
           sameSite: "Strict",
-          domain: ".sisia.ir",
+          domain: getEnv("PATH_DOMAIN"),
           path: "/",
         });
         return res.status(200).json({
@@ -358,7 +363,7 @@ class AurhController extends BaseController {
           httpOnly: true,
           secure: true,
           sameSite: "none",
-          domain: ".sisia.ir",
+          domain: getEnv("PATH_DOMAIN"),
           path: "/",
         });
         res.json({ code: 1 });
