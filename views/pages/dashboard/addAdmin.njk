@@ -1,0 +1,107 @@
+{% extends "pages/layout.njk" %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: auto; padding-top: 30px;">
+
+  <!-- جدول نمایش همه ادمین‌ها -->
+  <div class="card shadow-sm rounded-lg p-4">
+    {% if errors %}
+  {% if errors is iterable %}
+    {% for err in errors %}
+      <div class="alert alert-danger" role="alert">
+        {{ err }}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-danger" role="alert">
+      {{ errors }}
+    </div>
+  {% endif %}
+{% endif %}
+    <h3 class="mb-4 text-primary text-center">All Admins</h3>
+    <table class="table table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Nickname</th>
+          <th>Email</th>
+          <th>Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for admin in admins %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ admin.nickName }}</td>
+          <td>{{ admin.email }}</td>
+          <td>{{ admin.level }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4" class="text-center text-muted">No admins found</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="d-grid mb-3">
+      
+      <button class="btn btn-pink btn-lg" data-bs-toggle="modal" data-bs-target="#addAdminModal">
+        Add New Admin
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal فرم اضافه کردن ادمین -->
+  <div class="modal fade" id="addAdminModal" tabindex="-1" aria-labelledby="addAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-lg shadow-sm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addAdminModalLabel">Add New Admin</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addAdminForm" action="/pan/dashboard/addAdmin" method="POST">
+            <div class="mb-3">
+              <label for="email" class="form-label">Admin Email</label>
+              <input type="email" name="email" id="email" class="form-control" placeholder="example@email.com" required>
+            </div>
+            <div class="mb-3">
+              <label for="nickname" class="form-label">Admin Nickname</label>
+              <input type="text" name="nickname" id="nickname" class="form-control" placeholder="Nickname" required>
+            </div>
+            <div class="mb-3">
+              <label for="level" class="form-label">Admin Level</label>
+              <input type="text" name="level" id="level" class="form-control" placeholder="Level (e.g. super, editor)" required>
+            </div>
+            <div class="mb-3">
+              <label for="password1" class="form-label">Password</label>
+              <input type="password" name="password1" id="password1" class="form-control" placeholder="Enter password" required>
+            </div>
+            <div class="mb-3">
+              <label for="password2" class="form-label">Confirm Password</label>
+              <input type="password" name="password2" id="password2" class="form-control" placeholder="Repeat password" required>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-pink btn-lg">Add Admin</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  .btn-pink {
+    background-color: #d63384;
+    color: #fff;
+    border: none;
+  }
+  .btn-pink:hover {
+    background-color: #b52c6f;
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

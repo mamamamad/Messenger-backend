@@ -20,7 +20,7 @@ import redis from "../core/redis.mjs";
 /**
  * Controller for user authentication.
  */
-class AurhController extends BaseController {
+class AuthController extends BaseController {
   constructor() {
     super();
     this.userModel = UserModel;
@@ -62,10 +62,10 @@ class AurhController extends BaseController {
             var tokenExist = await redis.redis1.ftSearchUserTokenId(data[0].id);
             if (Object.keys(tokenExist).length > 1) {
               await redis.redis1.delHash(tokenExist.token);
-              const { refreshToken, accessToken } = await this.#createToken(
-                data[0].id,
-                data[0].email
-              );
+              const { refreshToken, accessToken } = await this.#createToken({
+                id: data[0].id,
+                email: data[0].email,
+              });
               res.cookie("accessToken", accessToken, {
                 maxAge: 15 * 60 * 1000,
                 httpOnly: true,
@@ -267,15 +267,16 @@ class AurhController extends BaseController {
       log(e);
     }
   }
-  async #createToken(id, email) {
+  async #createToken(data) {
     try {
       const refreshToken = genaratorToken(40);
-      const accessToken = crypto.jwtGenerator(email);
-      const refreshtokenData = {
-        id: id,
-        rT: refreshToken,
-        email: crypto.stringtoBase64(email),
-      };
+      const accessToken = crypto.jwtGenerator({ email: data.email });
+      let refreshtokenData = {};
+      Object.entries(data).map(([key, val]) => {
+        refreshtokenData[key] = val;
+      });
+      refreshtokenData["rT"] = refreshToken;
+      refreshtokenData["email"] = crypto.stringtoBase64(refreshtokenData.email);
       let result = await redis.redis1.setHash(
         `UserToken:${refreshToken}`,
         refreshtokenData,
@@ -299,6 +300,7 @@ class AurhController extends BaseController {
           error: err.errors.map((e) => e.msg),
         });
       }
+      log("hi");
       const { Fname, Lname, username, email, pass1, pass2 } = req.body;
       const existEmailemail = await this.userModel.userExistEmail(email);
       const existEmailusername = await this.userModel.userExistUsername(
@@ -391,4 +393,4 @@ class AurhController extends BaseController {
     }
   }
 }
-export default AurhController;
+export default AuthController;

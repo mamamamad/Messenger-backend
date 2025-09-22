@@ -1,0 +1,36 @@
+{% extends "pages/layout.njk" %}
+
+{% block content %}
+<div class="card p-4 bg-pink-100 rounded-lg shadow-md">
+  <h2 class="text-xl font-bold mb-4">Manage Users</h2>
+  <table class="table-auto w-full border border-gray-300">
+    <thead class="bg-pink-300">
+      <tr>
+        <th class="px-4 py-2 border">ID</th>
+        <th class="px-4 py-2 border">Email</th>
+        <th class="px-4 py-2 border">Nickname</th>
+        <th class="px-4 py-2 border">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr class="hover:bg-pink-200">
+        <td class="px-4 py-2 border">{{ user.Id }}</td>
+        <td class="px-4 py-2 border">{{ user.email }}</td>
+        <td class="px-4 py-2 border">{{ user.nickName }}</td>
+        <td class="px-4 py-2 border">
+          <form style="display:inline" action="/dashboard/ban-user" method="POST">
+            <input type="hidden" name="id" value="{{ user._id }}">
+            <button class="btn btn-sm btn-pink">Ban</button>
+          </form>
+          <form style="display:inline" action="/dashboard/delete-user" method="POST">
+            <input type="hidden" name="id" value="{{ user._id }}">
+            <button class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

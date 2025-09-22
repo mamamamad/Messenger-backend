@@ -5,11 +5,17 @@
  * Sets up middleware, routes, CORS, and error handling.
  */
 
-import { MongoDb, UserModel, messageModel } from "./globalMoudles.mjs";
+import {
+  MongoDb,
+  UserModel,
+  messageModel,
+  AdminModel,
+} from "./globalMoudles.mjs";
 
 import express from "express";
 import { log, getEnv } from "./core/utils.mjs";
 import Approute from "./routes/route.mjs";
+import Adminroute from "./routes/admin.mjs";
 import cors from "cors";
 import Error404 from "./controller/Error404Controller.mjs";
 import Error500 from "./controller/Error500Controller.mjs";
@@ -19,6 +25,10 @@ import swaggerUi from "swagger-ui-express";
 import http from "http";
 import initSocket from "./Socket/socket.mjs";
 import basicAuth from "express-basic-auth";
+import path from "path";
+import nunjucks from "nunjucks";
+import AdminController from "./controller/AdminController.mjs";
+const adminCon = new AdminController();
 /**
  * Application
  * -----------
@@ -45,6 +55,12 @@ class Application {
     this.#app.use(cookieParser());
     let userBasicAuth = getEnv("USER_AUTH");
     let passBasicAuth = getEnv("PASSWORD_AUTH");
+    this.#app.set("view engine", "njk");
+    let viewsPath = path.join(getEnv("BASE_PATH"), "views");
+    nunjucks.configure(viewsPath, {
+      autoescape: true,
+      express: this.#app,
+    });
 
     if (getEnv("DEBUG") !== 0) {
       this.#app.use(
@@ -66,6 +82,7 @@ class Application {
    */
   async #initRoutes() {
     this.#app.use("/api", Approute);
+    this.#app.use("/pan", Adminroute);
     this.#app.use(Error404.handle);
     this.#app.use(Error500.handle);
   }
@@ -101,6 +118,7 @@ class Application {
       }
       await UserModel.init();
       await messageModel.init();
+      await AdminModel.init();
       await this.#initExpress();
       await this.#initCors();
       await this.#initRoutes();
@@ -113,6 +131,7 @@ class Application {
   async run() {
     try {
       await this.#init();
+      await adminCon.initSuperAdmin();
       const port = getEnv("PORT");
       this.#server.listen(port, async () => {
         log(`listen on port ${port}`);

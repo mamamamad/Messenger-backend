@@ -113,7 +113,11 @@ class Crypto {
     //  In this function, a JWT token is created with specific data and saved in Redis with a random ID. This ID is unique for each user.
     try {
       let JwtSecret = getEnv("SECRET_KEY_JWT");
-      const token = jwt.sign({ email: data }, JwtSecret, {
+      let datasing = {};
+      Object.entries(data).map(([key, val]) => {
+        datasing[key] = val;
+      });
+      const token = jwt.sign(datasing, JwtSecret, {
         expiresIn: "15m",
       });
       return token;

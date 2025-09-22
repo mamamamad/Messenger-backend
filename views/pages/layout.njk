@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { 
+      background-color: #ffe4f0; 
+      font-family: 'Roboto', sans-serif; 
+      margin: 0;
+    }
+    .layout {
+      display: flex;            /* کنار هم قرار گرفتن */
+      min-height: 100vh;        /* پر کردن کل ارتفاع صفحه */
+    }
+    .sidebar { 
+      width: 220px; 
+      background-color: #d63384; 
+      color: white; 
+      padding: 20px; 
+      border-radius: 0 15px 15px 0; 
+    }
+    .sidebar a { 
+      display: block; 
+      margin-bottom: 10px; 
+      color: white; 
+      text-decoration: none; 
+      padding: 8px; 
+      border-radius: 5px; 
+    }
+    .sidebar a:hover { 
+      background-color: #b52c6f; 
+      padding-left: 12px; 
+      transition: 0.2s; 
+    }
+    .sidebar form button { margin-top: 20px; }
+    .main-content { 
+      flex: 1;                /* پر کردن باقی‌مانده فضا */
+      padding: 0;             /* حذف padding پیش‌فرض */
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      background: #fff;
+      padding: 15px 30px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .admin-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .admin-info img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #d63384;
+    }
+    .content-area {
+      padding: 30px;
+      flex-grow: 1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+  <div class="sidebar">
+    <h3>
+  <a href="/pan/dashboard/">
+    Admin Panel
+  </a>
+</h3>
+    <a href="/pan/dashboard/admin">Admins</a>
+    <a href="/pan/dashboard/manageUsers">Manage Users</a>
+    <a href="/pan/dashboard/messages">Messages</a>
+
+    <!-- Logout button -->
+    <form action="/pan/dashboard/logout" method="GET">
+      <button type="submit" class="btn btn-light w-100">Logout</button>
+    </form>
+  </div>
+
+  <div class="main-content">
+    <!-- هدر -->
+    <div class="header">
+     
+      <div class="admin-info">
+        <img src="/images/admin-avatar.jpg" alt="Admin Avatar">
+        <div>
+          <strong>{{ admin.nickName}}</strong><br>
+          <small class="text-muted">{{ admin.email }}</small>
+          <small class="text-muted">Level:{{ admin.level }}</small>
+          
+          
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="content-area">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

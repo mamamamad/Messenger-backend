@@ -9,6 +9,7 @@ import { Router } from "express";
 import userAuthRoute from "./userAuth.mjs";
 import userProfileRoute from "./userProfile.mjs";
 import chat from "./chat.mjs";
+import admin from "./admin.mjs";
 
 /**
  * Main application router.

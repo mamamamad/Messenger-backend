@@ -24,6 +24,7 @@ class Eroor500 extends BaseController {
    */
   async handle(err, req, res, next) {
     try {
+      log(err);
       return res.status(500).json({ error: "Internall Error" });
     } catch (e) {
       return this.defaultError(e, res);

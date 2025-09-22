@@ -40,3 +40,53 @@ export async function authJwt(req, res, next) {
     return res.status(401).json({ error: "Invalid token" });
   }
 }
+
+export async function authJwtAdmin(req, res, next) {
+  try {
+    const token = req.cookies.accessToken;
+    if (!token)
+      return res
+        .status(401)
+        .render("pages/login", { errors: ["Access denied"] });
+    const secretKey = getEnv("SECRET_KEY_JWT");
+    let decoded = null;
+    try {
+      decoded = jwt.verify(token, secretKey);
+    } catch (err) {
+      if (err.name === "TokenExpiredError") {
+        return res
+          .status(401)
+          .render("pages/login", { errors: ["token Expired"] });
+      } else if (err.name === "JsonWebTokenError") {
+        return res
+          .status(401)
+          .render("pages/login", { errors: ["Malformed token"] });
+      } else if (err.name === "NotBeforeError") {
+        return res
+          .status(401)
+          .render("pages/login", { errors: ["Invalid token"] });
+      } else {
+        log(err);
+        return res
+          .status(401)
+          .render("pages/login", { errors: ["Invalid token"] });
+      }
+    }
+
+    const base64Code = crypto.stringtoBase64(decoded.email);
+    let existRefreshToken = await redis.redis1.ftSearchAdminTokenIdEmail(
+      base64Code
+    );
+
+    if (base64Code === existRefreshToken.data.email) {
+      req.adminEmail = decoded.email;
+      req.level = decoded.level;
+
+      return next();
+    }
+    return res.status(401).render("pages/login", { errors: ["Invalid token"] });
+  } catch (error) {
+    log(error);
+    return res.status(401).render("pages/login", { errors: ["Invalid token"] });
+  }
+}

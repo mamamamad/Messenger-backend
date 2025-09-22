@@ -10,3 +10,5 @@ IV=A random keys for encryption and decryptions.
 SECRET_KEY_JWT=
 PASSWORD_AUTH=
 USER_AUTH=
+SUPERADMIN_EMAIL=
+SUPERADMIN_PASSWORD=

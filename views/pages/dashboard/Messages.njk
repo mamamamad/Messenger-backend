@@ -1,0 +1,82 @@
+{% extends "pages/layout.njk" %}
+{% set messages = [
+  { _id: "101", senderEmail: "test1@example.com", content: "Hello Admin!" },
+  { _id: "102", senderEmail: "test2@example.com", content: "This is a test message." }
+] %}
+
+{% block content %}
+<div class="chat-wrapper d-flex flex-column" style="height: 80vh; max-height: 80vh;">
+
+  <!-- لیست پیام‌ها -->
+  <div id="chatMessages" class="flex-grow-1 overflow-auto mb-3 p-3" 
+       style="background:#fff; border-radius:15px; box-shadow:0 8px 20px rgba(0,0,0,0.1);">
+    
+    {% for msg in messages %}
+      <div class="chat-message mb-3 {% if loop.index is even %}text-end{% endif %}">
+        <div class="d-inline-block px-3 py-2 rounded-3 
+                    {% if loop.index is even %}
+                       bg-primary text-white
+                    {% else %}
+                       bg-light border
+                    {% endif %}">
+          <small class="d-block fw-bold">{{ msg.senderEmail }}</small>
+          {{ msg.content }}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- فرم ارسال پیام -->
+  <form id="addMessageForm" action="/dashboard/add-message" method="POST" class="d-flex gap-2">
+    <input type="email" class="form-control" name="senderEmail" placeholder="Sender Email" required>
+    <input type="text" class="form-control" name="content" placeholder="Type a message..." required>
+    <button type="submit" class="btn btn-primary">Send</button>
+  </form>
+</div>
+
+<script>
+  const addMessageForm = document.getElementById("addMessageForm");
+  const chatMessages = document.getElementById("chatMessages");
+
+  addMessageForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(addMessageForm);
+    const payload = {
+      senderEmail: formData.get("senderEmail"),
+      content: formData.get("content")
+    };
+
+    try {
+      const res = await fetch("/dashboard/add-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        const newMsg = await res.json();
+
+        // ساخت پیام جدید
+        const msgDiv = document.createElement("div");
+        msgDiv.className = "chat-message mb-3 text-end";
+        msgDiv.innerHTML = `
+          <div class="d-inline-block px-3 py-2 rounded-3 bg-primary text-white">
+            <small class="d-block fw-bold">${newMsg.senderEmail}</small>
+            ${newMsg.content}
+          </div>
+        `;
+
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight; // اسکرول به آخر
+
+        addMessageForm.reset();
+      } else {
+        alert("Error adding message");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  });
+</script>
+{% endblock %}

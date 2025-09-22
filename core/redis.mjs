@@ -131,6 +131,42 @@ class RedisClient {
       log(e);
     }
   }
+  async ftSearchAdminTokenId(value) {
+    // A function is created to build an FT index for FT.SEARCH in Redis, then the value is searched and the result is returned.
+    try {
+      if (!(await this.checkFtIndex("adminTokenid"))) {
+        await this.#ioredis.call(
+          "FT.CREATE",
+          "adminTokenid",
+          "ON",
+          "HASH",
+          "PREFIX",
+          "1",
+          "adminToken:",
+          "SCHEMA",
+          "id",
+          "TEXT",
+          "rT",
+          "TEXT",
+          "email",
+          "TEXT",
+          "level",
+          "TEXT"
+        );
+      }
+
+      let result = await this.#ioredis.call(
+        "FT.SEARCH",
+        "adminTokenid",
+        `@id:${value}`
+      );
+
+      result = result.length === 0 ? false : this.arrayTokenToJson(result);
+      return result;
+    } catch (e) {
+      log(e);
+    }
+  }
 
   async ftSearchUserTokenIdEmail(value) {
     // A function is created to build an FT index for FT.SEARCH in Redis, then the value is searched and the result is returned.
@@ -157,6 +193,42 @@ class RedisClient {
       let result = await this.#ioredis.call(
         "FT.SEARCH",
         "userTokenemail",
+        `@email:${value}`
+      );
+      result = result.length === 0 ? false : this.arrayTokenToJson(result);
+
+      return result;
+    } catch (e) {
+      log(e);
+    }
+  }
+  async ftSearchAdminTokenIdEmail(value) {
+    // A function is created to build an FT index for FT.SEARCH in Redis, then the value is searched and the result is returned.
+    try {
+      if (!(await this.checkFtIndex("adminTokenemail"))) {
+        await this.#ioredis.call(
+          "FT.CREATE",
+          "adminTokenemail",
+          "ON",
+          "HASH",
+          "PREFIX",
+          "1",
+          "adminToken:",
+          "SCHEMA",
+          "id",
+          "TEXT",
+          "rT",
+          "TEXT",
+          "email",
+          "TEXT",
+          "level",
+          "TEXT"
+        );
+      }
+
+      let result = await this.#ioredis.call(
+        "FT.SEARCH",
+        "adminTokenemail",
         `@email:${value}`
       );
       result = result.length === 0 ? false : this.arrayTokenToJson(result);
