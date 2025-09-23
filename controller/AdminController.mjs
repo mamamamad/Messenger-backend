@@ -100,10 +100,21 @@ class AdminController extends BaseController {
   async AdminPage(req, res) {
     try {
       const admins = await this.userModel.allAdmin();
+      const { error } = req.query;
       if (admins) {
-        res.render("pages/dashboard/addadmin.njk", {
-          admins,
-        });
+        if (req.level === 1) {
+          res.render("pages/dashboard/addadmin.njk", {
+            admins,
+            currentAdmin: { level: 1 },
+            errors: error ? [error] : [],
+          });
+        } else {
+          res.render("pages/dashboard/addadmin.njk", {
+            admins,
+            currentAdmin: { level: 0 },
+            errors: error ? [error] : [],
+          });
+        }
       } else {
         res.render("pages/dashboard/addadmin.njk", {
           errors: ["admin Not Found"],
@@ -116,8 +127,7 @@ class AdminController extends BaseController {
   async dashboard(req, res) {
     try {
       const result = await this.userModel.adminExistEmail(req.adminEmail);
-      log(res.locals);
-      return res.render("pages/dashboard.njk", {});
+      return res.render("pages/dashboard.njk");
     } catch (e) {
       log(e);
     }
@@ -126,7 +136,33 @@ class AdminController extends BaseController {
   async addAdmin(req, res) {
     try {
       const { nickname, password1, password2, email, level } = req.body;
-      return res.render("pages/dashboard.njk", {});
+
+      if (req.level === 1) {
+        if (password1 !== password2) {
+          return res.redirect(
+            "/pan/dashboard/admin?error=the+Password+is+Not+match"
+          );
+        } else {
+          let checkEmail = await this.userModel.adminExistEmail(email);
+          if (checkEmail) {
+            return res.redirect(
+              "/pan/dashboard/admin?error=the+Email+already+used."
+            );
+          } else {
+            let adminCreate = await this.#addAdmin(
+              email,
+              nickname,
+              password1,
+              level
+            );
+            return res.redirect(`/pan/dashboard/admin?error=${adminCreate}`);
+          }
+        }
+      } else {
+        return res.redirect(
+          `/pan/dashboard/admin?error=you+cant+add+new+Admin.`
+        );
+      }
     } catch (e) {
       log(e);
     }
@@ -148,9 +184,9 @@ class AdminController extends BaseController {
         let result = await this.userModel.addAdmin(data);
         log(result);
         if (result.email === email1) {
-          return "User Created Successfully";
+          return "User+Created+Successfully";
         } else {
-          return "An error occurred during registration.";
+          return "An+error+occurred+during+registration.";
         }
       }
     } catch (e) {

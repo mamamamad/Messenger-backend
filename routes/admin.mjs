@@ -32,7 +32,13 @@ route.get("/", (req, res) => {
 route.get("/dashboard", authJwtAdmin, infoAdmin, adminCon.dashboard);
 
 route.get("/dashboard/admin", authJwtAdmin, infoAdmin, adminCon.AdminPage);
-route.post("/dashboard/addadmin", authJwtAdmin, adminCon.addAdmin);
+route.post(
+  "/dashboard/addadmin",
+  authJwtAdmin,
+  new validateBody(["email", "password1", "password2", "nickname", "level"])
+    .handle,
+  adminCon.addAdmin
+);
 
 route.get("/dashboard/manageUsers", authJwtAdmin, infoAdmin, (req, res) => {
   return res.render("pages/dashboard/manageUsers.njk", {
