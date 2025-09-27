@@ -7,7 +7,7 @@ import crypto from "../core/crypto.mjs";
 
 export async function authJwt(req, res, next) {
   try {
-    const token = req.header("Authorization");
+    const token = req.cookies.accessToken;
     if (!token) return res.status(401).json({ error: "Access denied" });
     const secretKey = getEnv("SECRET_KEY_JWT");
     let decoded = null;

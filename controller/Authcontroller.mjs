@@ -352,7 +352,7 @@ class AuthController extends BaseController {
           error: err.errors.map((e) => e.msg),
         });
       }
-      const refreshToken = req.body.RefreshToken;
+      const refreshToken = req.cookies.refreshToken;
 
       let existToken = await redis.redis1.getHashAll(
         `UserToken:${refreshToken}`
@@ -378,7 +378,7 @@ class AuthController extends BaseController {
   }
   async logOut(req, res) {
     try {
-      const refreshToken = req.body.RefreshToken;
+      const refreshToken = req.cookies.refreshToken;
       let existToken = await redis.redis1.getHashAll(
         `UserToken:${refreshToken}`
       );
